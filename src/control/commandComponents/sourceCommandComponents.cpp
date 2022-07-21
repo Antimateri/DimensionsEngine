@@ -2,18 +2,20 @@
 #include "control/command.h"
 #include "logic/objects/component.h"
 
-const void EntitySourceCommandComponent::action(command* _command, game* _game){
+int const EntitySourceCommandComponent::action(command* _command, game* _game){
     prevx=_command->sourceX;
     prevy=_command->sourceY;
     prevent=_command->source;
     _command->source=ent;
     positionComponent* pos=library._world->Get<positionComponent>(ent);
-    if(pos==nullptr)return;
+    if(pos==nullptr)return 0;
     _command->targetY=pos->tileY;
     _command->targetX=pos->tileX;
+    return 0;
 }
-const void EntitySourceCommandComponent::reverseAction(command* _command, game* _game){
+int const EntitySourceCommandComponent::reverseAction(command* _command, game* _game){
     _command->sourceX=prevx;
     _command->sourceY=prevy;
     _command->source=prevent;
+    return 0;
 }

@@ -30,3 +30,5 @@ inline bool IsEntityValid(EntityID id){
 }
 
 #define INVALID_ENTITY 0
+
+#define RESERVED_SPACE CreateEntityId(-1,0)

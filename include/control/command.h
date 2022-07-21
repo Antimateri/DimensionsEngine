@@ -5,7 +5,11 @@
 #include "logic/game.h"
 
 struct command{
+private:
 
+    std::list<commandComponent*>::iterator it;
+
+public:
     EntityID source;
 
     int sourceX, sourceY;
@@ -14,13 +18,19 @@ struct command{
 
     std::list<commandComponent*> _components;
 
-    void action(game* _game);
+    command(){source=INVALID_ENTITY;}
+
+    void ready(){it=_components.begin();}
+
+    EntityIndex getSource(){return source;}
+
+    int action(game* _game);
     
-    void reverseAction(game* _game);
+    int reverseAction(game* _game);
     
     command* replicate();
     
-    bool Accepted(game* _game);
+    //bool Accepted(game* _game);
 
     void addActionComponent(commandComponent* _component);
 

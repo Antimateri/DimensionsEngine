@@ -5,13 +5,13 @@
 
 class commandComponent{
 public:
-    virtual const void action(command* _command, game* _game){}
-    virtual const void reverseAction(command* _command, game* _game){}
+    virtual int const action(command* _command, game* _game){}
+    virtual int const reverseAction(command* _command, game* _game){}
     //se paga el precio y se comprueba si puede realizarlo (en ese orden)
-    virtual const bool accepted(command* _command, const game* _game){return true;}
+    virtual bool const accepted(command* _command, const game* _game){return true;}
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    virtual const void reverseAccepted(command* _command, const game* _game){}
-    virtual const commandComponent* replicate(){return new commandComponent();}
+    virtual void const reverseAccepted(command* _command, const game* _game){}
+    virtual commandComponent* const replicate(){return new commandComponent();}
 };
 
 class teleportCommandComponent: public commandComponent{
@@ -26,11 +26,11 @@ public:
 
     teleportCommandComponent(int APpT):APpT(APpT){}
 
-    const void action(command* _command, game* _game);
-    const void reverseAction(command* _command, game* _game);
-    const bool accepted(command* _command, const game* _game);
-    const void reverseAccepted(command* _command, const game* _game);
-    const commandComponent* replicate();
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    bool const accepted(command* _command, const game* _game);
+    void const reverseAccepted(command* _command, const game* _game);
+    commandComponent* const replicate();
 };
 
 class targetCommandComponent: public commandComponent{
@@ -46,13 +46,13 @@ public:
 
     targetCommandComponent(int targetX, int targetY): targetX(targetX), targetY(targetY){}
 
-    const void action(command* _command, game* _game);
-    const void reverseAction(command* _command, game* _game);
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
     //se paga el precio y se comprueba si puede realizarlo (en ese orden)
-    const bool accepted(command* _command, const game* _game){return true;}
+    bool const accepted(command* _command, const game* _game){return true;}
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    const void reverseAccepted(command* _command, const game* _game){}
-    const commandComponent* replicate(){return new targetCommandComponent(targetX, targetY);}
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new targetCommandComponent(targetX, targetY);}
 };
 
 class EntitySourceCommandComponent: public commandComponent{
@@ -68,12 +68,12 @@ public:
 
     EntitySourceCommandComponent(EntityID ent): ent(ent){}
 
-    const void action(command* _command, game* _game);
-    const void reverseAction(command* _command, game* _game);
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
     //se paga el precio y se comprueba si puede realizarlo (en ese orden)
-    const bool accepted(command* _command, const game* _game){return true;}
+    bool const accepted(command* _command, const game* _game){return true;}
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    const void reverseAccepted(command* _command, const game* _game){}
-    const commandComponent* replicate(){return new EntitySourceCommandComponent(ent);}
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new EntitySourceCommandComponent(ent);}
 };
 

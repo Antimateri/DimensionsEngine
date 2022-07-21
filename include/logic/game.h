@@ -7,6 +7,10 @@
 struct controles;
 
 struct game{
+private:
+
+    std::list<std::list<command*>> waiting;
+
 public:
 
     enum gameState{
@@ -26,6 +30,6 @@ public:
     void gameLoop();
     void run();
     void processInput();
-    void executeCommand(command* c);
+    void addCommand(command* c);
 
 };

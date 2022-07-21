@@ -46,6 +46,8 @@ public:
         undefined
     };
 
+    World(){}
+
     World(int nXTiles, int nYTiles);
 
     ~World();
