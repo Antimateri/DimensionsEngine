@@ -20,7 +20,7 @@ struct libra{
     EntityID _player;
 
     //quitar
-    innerAnimation* an;
+    command* aux; 
 
 };
 

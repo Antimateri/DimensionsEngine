@@ -33,9 +33,7 @@ bool toRenderEntities::processInput(SDL_Event& _event){
         return 1;
     }
     if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_LEFT){
-        command* _move=new command();
-        _move->addActionComponent(new innerAnimationCommandComponent(library.an));
-        _move->addActionComponent(new teleportCommandComponent(10));
+        command* _move=library.aux->replicate();
         _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
         _move->addInfoComponent(new EntitySourceCommandComponent(library._player));
         library._game->addCommand(_move);

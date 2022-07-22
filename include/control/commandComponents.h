@@ -6,8 +6,8 @@
 
 class commandComponent{
 public:
-    virtual int const action(command* _command, game* _game){}
-    virtual int const reverseAction(command* _command, game* _game){}
+    virtual int const action(command* _command, game* _game){return 0;}
+    virtual int const reverseAction(command* _command, game* _game){return 0;}
     //se paga el precio y se comprueba si puede realizarlo (en ese orden)
     virtual bool const accepted(command* _command, const game* _game){return true;}
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado

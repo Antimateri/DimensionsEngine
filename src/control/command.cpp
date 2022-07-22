@@ -42,8 +42,8 @@ int command::reverseAction(game* _game){
 command* command::replicate(){
     command* out=new command();
     auto it2=_components.begin();
-    for(;it!=_components.end();it++)
-        out->addActionComponent((*it)->replicate());
+    for(;it2!=_components.end();it2++)
+        out->addActionComponent((*it2)->replicate());
     return out;
 }
     
