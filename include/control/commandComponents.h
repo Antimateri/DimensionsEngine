@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "logic/objects/component.h"
+#include "graphic/animation.h"
 
 class commandComponent{
 public:
@@ -75,5 +76,21 @@ public:
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
     void const reverseAccepted(command* _command, const game* _game){}
     commandComponent* const replicate(){return new EntitySourceCommandComponent(ent);}
+};
+
+class innerAnimationCommandComponent: public commandComponent{
+private:
+
+    innerAnimation* an;
+
+public:
+
+    innerAnimationCommandComponent(innerAnimation* an):an(an){}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    bool const accepted(command* _command, const game* _game){return true;}
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new innerAnimationCommandComponent(an);}
 };
 

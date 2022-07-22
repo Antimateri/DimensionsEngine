@@ -1,6 +1,7 @@
 #include "logic/game.h"
 #include "logic/objects/world.h"
 #include "logic/objects/component.h"
+#include "graphic/animation.h"
 
 int main(){
     game _game;
@@ -17,6 +18,15 @@ int main(){
     r=library._textureManager->edit();
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
     SDL_RenderFillRect(r,&library._world->Get<imageComponent>(ent2)->img.getRect());
+    library.an=new innerAnimation();
+    textureManager::imgDir au=library._textureManager->add();
+    r=library._textureManager->edit();
+    SDL_SetRenderDrawColor(r, 0, 255, 255, 255);
+    SDL_RenderFillRect(r,&au.getRect());
+    library.an->addStep(library._world->Get<imageComponent>(ent)->img, 100);
+    library.an->addStep(au, 100);
+    library.an->addStep(library._world->Get<imageComponent>(ent)->img, 1);
+    //library.an->addStep(library._world->Get<imageComponent>(ent)->img, 100);
     library._game->initGame();
     library._game->gameLoop();
     return 0;

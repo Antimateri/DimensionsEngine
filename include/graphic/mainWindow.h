@@ -29,4 +29,6 @@ public:
     void addLayer(toRender* render);
 
     void removeLastLayer();
+
+    void addAnimation(innerAnimation* in);
 };

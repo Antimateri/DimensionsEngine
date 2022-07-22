@@ -9,7 +9,7 @@ public:
     
     virtual void draw(SDL_Renderer* r){};
 
-    virtual bool processInput(SDL_Event& _event){};
+    virtual bool processInput(SDL_Event& _event){return 0;};
 
 };
 

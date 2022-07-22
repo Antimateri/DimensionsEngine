@@ -37,7 +37,7 @@ void game::gameLoop(){
         std::cout<<std::endl;*/
         processInput();
         run();
-        SDL_Delay( 20 );
+        SDL_Delay( 1000/FPS );
     }
 }
 

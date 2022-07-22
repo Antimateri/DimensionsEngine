@@ -6,6 +6,9 @@ class mainWindow;
 class textureManager;
 struct command;
 
+//quitar
+class innerAnimation;
+
 typedef unsigned long long EntityID;
 
 struct libra{
@@ -15,6 +18,9 @@ struct libra{
     mainWindow* _mainWindow;
     textureManager* _textureManager;
     EntityID _player;
+
+    //quitar
+    innerAnimation* an;
 
 };
 

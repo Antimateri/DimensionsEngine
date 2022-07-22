@@ -2,8 +2,16 @@
 
 #include "common.h"
 #include "graphic/toRender.h"
+#include "graphic/animation.h"
 
 struct Renderer{
+private:
+
+    std::list<innerAnimation*> todo;
+
+    void processAnimations();
+
+public:
 
     ~Renderer();
 
@@ -16,4 +24,6 @@ struct Renderer{
     void addLayer(toRender* render);
 
     void removeLastLayer();
+
+    void addInnerAnimation(innerAnimation* in);
 };
