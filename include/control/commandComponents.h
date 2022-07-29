@@ -34,6 +34,19 @@ public:
     commandComponent* const replicate();
 };
 
+class delayCommandComponent: public commandComponent{
+private:
+    int ms;
+
+public:
+
+    delayCommandComponent(int ms):ms(ms){}
+
+    int const action(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
+    int const reverseAction(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
+    commandComponent* const replicate(){return new delayCommandComponent(ms);}
+};
+
 class targetCommandComponent: public commandComponent{
 private:
 

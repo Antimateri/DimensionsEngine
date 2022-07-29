@@ -20,8 +20,8 @@ bool const teleportCommandComponent::accepted(command* _command, const game* _ga
         return 1;
     this->APtaken=APpT*(abs(_command->sourceX-_command->targetX)+abs(_command->sourceY-_command->targetY));
     ap->subVal(this->APtaken);
-    if(library._world->map[_command->targetX][_command->targetY]!=INVALID_ENTITY || library._world->map[_command->sourceX][_command->sourceY]!=_command->source)
-        return 0;
+    //if(!library._world->_map.map[_command->targetX][_command->targetY].empty() && library._world->_map.map[_command->sourceX][_command->sourceY]!=_command->source)
+    //    return 0;
     if(ap->getVal()>=0)
         return 1;
     return 0;

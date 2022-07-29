@@ -5,6 +5,10 @@
 #include <bitset>
 #include <unordered_set>
 #include <list>
+#include <unordered_map>
+#include <stack>
+#include <set>
+#include <map>
 
 class ConjuntosDisjuntos {
 protected:

@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <iostream>
-#include <algorithm>
 #include <random>
 
 #include "definitions.h"

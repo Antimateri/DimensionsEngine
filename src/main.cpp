@@ -15,6 +15,7 @@ int main(){
     EntityID ent2=library._world->newEntity();
     library._world->Assign<positionComponent>(ent2)->moveTo(1,2,library._world,ent2);
     library._world->Assign<imageComponent>(ent2)->img=library._textureManager->add();
+    library._world->Assign<blockComponent>(ent2)->setBlock(directions::all);
     r=library._textureManager->edit();
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
     SDL_RenderFillRect(r,&library._world->Get<imageComponent>(ent2)->img.getRect());

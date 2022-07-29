@@ -9,8 +9,8 @@ int const EntitySourceCommandComponent::action(command* _command, game* _game){
     _command->source=ent;
     positionComponent* pos=library._world->Get<positionComponent>(ent);
     if(pos==nullptr)return 0;
-    _command->targetY=pos->tileY;
-    _command->targetX=pos->tileX;
+    _command->sourceY=pos->tileY;
+    _command->sourceX=pos->tileX;
     return 0;
 }
 int const EntitySourceCommandComponent::reverseAction(command* _command, game* _game){

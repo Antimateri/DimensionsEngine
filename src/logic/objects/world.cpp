@@ -1,7 +1,15 @@
 #include "logic/objects/world.h"
 #include "logic/objects/component.h"
 
-World::World(int nXTiles, int nYTiles):  nXTiles(nXTiles), nYTiles(nYTiles), map(nXTiles,std::vector<EntityID>(nYTiles,INVALID_ENTITY)){
+bool World::mapRepresentation::getBlock(int dir, int x, int y){
+        for(EntityID i: map[x][y]){
+            if(super->Get<blockComponent>(i) != nullptr && super->Get<blockComponent>(i)->getBlock(dir))
+                return 1;
+        }
+        return 0;
+    }
+
+World::World(int nXTiles, int nYTiles): _map(nXTiles, nYTiles, this){
     s_componentCounter = 0;
     //No entity
     entities.push_back({0,ComponentMask()});

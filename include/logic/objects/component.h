@@ -4,9 +4,18 @@
 #include "logic/objects/world.h"
 #include "graphic/textureManager.h"
 
-enum EspecialComponent{
-    value
-};
+namespace directions{
+        const int center=1;
+        const int left=2;
+        const int right=4;
+        const int top=8;
+        const int bottom=16;
+        const int all=31;
+
+
+    void dir2coord(int dir, int &dx, int &dy);
+
+}
 
 class ExistsComponent{};
 
@@ -25,6 +34,7 @@ class positionComponent{
 private:
 
     World* _world;
+    std::list<EntityID>::iterator pos;
     
 public:
 
@@ -37,11 +47,31 @@ public:
         PositionOccupied
     };
 
+    positionComponent():tileY(-1), tileX(-1){}
+
     ~positionComponent();
 
     moveError moveTo(int tileX, int tileY, World* world, EntityID id);
 
     moveError changePos(int dx, int dy, World* world, EntityID id);
+
+    moveError moveInDirection(int dir, World* world, EntityID id);
+};
+
+class blockComponent{
+private:
+    int type;
+
+public:
+
+    void setBlock(int dir){
+        type=dir;
+    }
+
+    bool getBlock(int dir){
+        return type&dir==dir;
+    }
+
 };
 
 class valueComponent{

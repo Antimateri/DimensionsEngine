@@ -33,9 +33,43 @@ private:
 
 public:
 
-    int nXTiles, nYTiles;
+    struct mapRepresentation{
 
-    std::vector<std::vector<EntityID>> map;
+        int nXTiles, nYTiles;
+
+        World* super;
+
+        std::vector<std::vector<std::list<EntityID>>> map;
+
+       mapRepresentation(int nXTiles, int nYTiles, World* super): 
+                nXTiles(nXTiles), nYTiles(nYTiles), map(nXTiles,std::vector<std::list<EntityID>>(nYTiles,std::list<EntityID>())), super(super){}
+
+        bool isValid(int x, int y){
+            return (x >= 0) && (x < map.size()) && (y >= 0) && (y < map[0].size());
+        }
+
+        long long hashCoord(int x, int y){
+            return x*map[0].size()+y;
+        }
+
+        void deHashCoord(long long coord, int &x, int &y){
+            y=coord%map[0].size();
+            x=(coord-y)/map[0].size();
+        }
+
+        bool getBlock(int dir, int x, int y);
+
+        template<typename T>
+        T* Get(int x, int y){
+            if(map[x][y].empty())
+                return nullptr;
+            return super->Get<T>(map[x][y].back());
+        }
+
+    };
+
+    mapRepresentation _map;
+
     SDL_Texture* background;
 
     enum Direction{
@@ -45,8 +79,6 @@ public:
         left,
         undefined
     };
-
-    World(){}
 
     World(int nXTiles, int nYTiles);
 
