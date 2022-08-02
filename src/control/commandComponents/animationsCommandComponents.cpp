@@ -12,4 +12,10 @@ int const innerAnimationCommandComponent::action(command* _command, game* _game)
 }
 
 //TODO
-int const innerAnimationCommandComponent::reverseAction(command* _command, game* _game){return 0;}
+int const innerAnimationCommandComponent::reverseAction(command* _command, game* _game){
+    if(_command->source==INVALID_ENTITY)return -1;
+    an->setSource(_command->source);
+    an->reverseBegin();
+    library._mainWindow->addAnimation(an);
+    return an->getSteps();
+}

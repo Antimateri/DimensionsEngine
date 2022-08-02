@@ -13,6 +13,7 @@ private:
     int counter;
     EntityID source;
     int nsteps=0;
+    bool order;
 
 public:
 
@@ -23,8 +24,6 @@ public:
     bool step();
 
     void reverseBegin();
-
-    bool reverseStep();
 
     void setSource(EntityID source);
 

@@ -6,19 +6,32 @@ void innerAnimation::begin(){
     it=steps.begin();
     counter=0;
     library._world->Get<imageComponent>(source)->img=it->second;
+    this->order=1;
 }
 
 bool innerAnimation::step(){
-    
-    if(counter>=it->first){
-        counter=0;
-        it++;
-        if(it==steps.end())return 1;
-        library._world->Get<imageComponent>(source)->img=it->second;
+    if(this->order){
+        if(counter>=it->first){
+            counter=0;
+            it++;
+            if(it==steps.end())return 1;
+            library._world->Get<imageComponent>(source)->img=it->second;
+        }
+        else
+            counter++;
+        return 0;
     }
-    else
-        counter++;
-    return 0;
+    else{
+        if(it==steps.begin())return 1;
+        if(counter>=it->first){
+            counter=0;
+            it--;
+            library._world->Get<imageComponent>(source)->img=it->second;
+        }
+        else
+            counter++;
+        return 0;
+    }
 }
 
 void innerAnimation::reverseBegin(){
@@ -26,18 +39,7 @@ void innerAnimation::reverseBegin(){
     it--;
     counter=0;
     library._world->Get<imageComponent>(source)->img=it->second;
-}
-
-bool innerAnimation::reverseStep(){
-    if(it==steps.begin())return 1;
-    if(counter>=it->first){
-        counter=0;
-        it--;
-        library._world->Get<imageComponent>(source)->img=it->second;
-    }
-    else
-        counter++;
-    return 0;
+    this->order=0;
 }
 
 void innerAnimation::setSource(EntityID source){
