@@ -12,12 +12,12 @@ private:
     std::list<std::pair<int,textureManager::imgDir>>::iterator it;
     int counter;
     EntityID source;
-    int nsteps=0;
+    float ms;
     bool order;
 
 public:
 
-    int const getSteps(){return nsteps;}
+    int const getSteps(){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
 
     void begin();
 
@@ -27,6 +27,6 @@ public:
 
     void setSource(EntityID source);
 
-    void addStep(textureManager::imgDir frame, int duration);
+    void addStep(textureManager::imgDir frame, float ms);
 
 };

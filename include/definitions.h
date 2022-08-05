@@ -10,4 +10,4 @@
 
 #define NUMBER_COMMANDS_REMEMBERED 10
 
-#define FPS 25
+#define FPS 31

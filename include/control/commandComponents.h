@@ -36,11 +36,11 @@ public:
 
 class delayCommandComponent: public commandComponent{
 private:
-    int ms;
+    float ms;
 
 public:
 
-    delayCommandComponent(int ms):ms(ms){}
+    delayCommandComponent(float ms):ms(ms){}
 
     int const action(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
     int const reverseAction(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
@@ -99,6 +99,8 @@ private:
 public:
 
     innerAnimationCommandComponent(innerAnimation* an):an(an){}
+
+    ~innerAnimationCommandComponent(){delete an;}
 
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);

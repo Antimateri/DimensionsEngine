@@ -46,8 +46,8 @@ void innerAnimation::setSource(EntityID source){
     this->source=source;
 }
 
-void innerAnimation::addStep(textureManager::imgDir frame, int ms){
+void innerAnimation::addStep(textureManager::imgDir frame, float ms){
     int dur=std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);
-    this->nsteps+=dur;
+    this->ms+=dur;
     steps.push_back({dur,frame});
 }
