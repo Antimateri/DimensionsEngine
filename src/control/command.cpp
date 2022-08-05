@@ -9,14 +9,14 @@ command::~command(){
 int command::action(game* _game){
     for(;it!=_components.end();it++){
         if(!(*it)->accepted(this,_game)){
-            it++;
-            reverseAction(_game);
+            (*it)->reverseAccepted(this,_game);
+            it--;
+            while(reverseAction(_game)!=0);
             return -1;
         }
         int code=(*it)->action(this,_game);
         if(code==-1){
-            it++;
-            reverseAction(_game);
+            while(reverseAction(_game)!=0);
             return -1;
         }
         else if(code>0){
@@ -28,15 +28,17 @@ int command::action(game* _game){
 }
     
 int command::reverseAction(game* _game){
-    it--;
     for(;it!=_components.begin();it--){
         (*it)->reverseAccepted(this,_game);
         int code=(*it)->reverseAction(this,_game);
-        if(code>0)
+        if(code>0){
+            it--;
             return code;
+        }
     }
     (*it)->reverseAccepted(this,_game);
-    return (*it)->reverseAction(this,_game);;
+    (*it)->reverseAction(this,_game);
+    return 0;
 }
     
 command* command::replicate(){
@@ -65,4 +67,14 @@ void command::addActionComponent(commandComponent* _component){
 
 void command::addInfoComponent(commandComponent* _component){
     _components.push_front(_component);
+}
+
+bool command::abort(){
+    if(stopable){
+        it=_components.end();
+        if(library._world->Get<currentActionComponent>(source)!=nullptr && library._world->Get<currentActionComponent>(source)->current==this)
+            library._world->Get<currentActionComponent>(source)->current=nullptr;
+        return 1;
+    }
+    return 0;
 }

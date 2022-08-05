@@ -27,6 +27,8 @@ void toRenderEntities::draw(SDL_Renderer* r){
 command* generatePathCommand(int endx, int endy, EntityID id){
     std::list<Pair> in;
     command* out=new command();
+    out->addInfoComponent(new EntitySourceCommandComponent(id));
+    out->addActionComponent(new setCurrentCommandComponent());
     int beginx=library._world->Get<positionComponent>(id)->tileX;
     int beginy=library._world->Get<positionComponent>(id)->tileY;
     if(getPath(library._world->_map, beginx, beginy, endx, endy, in)){
@@ -37,6 +39,8 @@ command* generatePathCommand(int endx, int endy, EntityID id){
             out->addActionComponent(new teleportCommandComponent(1));
         }
     }
+    out->addActionComponent(new resetCurrentCommandComponent());
+    out->stopable=true;
     return out;
 }
 
@@ -58,6 +62,13 @@ bool toRenderEntities::processInput(SDL_Event& _event){
         _move->addInfoComponent(new EntitySourceCommandComponent(library._player));*/
         command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player);
         library._game->addCommand(move);
+        return 1;
+    }
+    if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_RIGHT){
+        command* _move=library.aux->replicate();
+        _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
+        _move->addInfoComponent(new EntitySourceCommandComponent(library._player));
+        library._game->addCommand(_move);
         return 1;
     }
     return 0;

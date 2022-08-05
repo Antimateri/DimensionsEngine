@@ -16,9 +16,11 @@ public:
 
     int targetX, targetY;
 
+    bool stopable;
+
     std::list<commandComponent*> _components;
 
-    command(){source=INVALID_ENTITY;}
+    command(){source=INVALID_ENTITY;stopable=false;}
 
     void ready(){it=_components.begin();}
 
@@ -37,5 +39,7 @@ public:
     void addInfoComponent(commandComponent* _component);
 
     ~command();
+
+    bool abort();
     
 };

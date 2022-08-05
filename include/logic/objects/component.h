@@ -74,6 +74,11 @@ public:
 
 };
 
+class currentActionComponent{
+public:
+    command* current=nullptr;
+};
+
 class valueComponent{
 private:
     int val;

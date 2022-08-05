@@ -7,6 +7,7 @@ int main(){
     game _game;
     EntityID ent=library._world->newEntity();
     library._world->Assign<positionComponent>(ent)->moveTo(1,1,library._world,ent);
+    library._world->Assign<currentActionComponent>(ent);
     library._world->Assign<imageComponent>(ent)->img=library._textureManager->add();
     SDL_Renderer* r=library._textureManager->edit();
     SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
@@ -28,11 +29,13 @@ int main(){
     an2->addStep(au, 100);
     an->addStep(library._world->Get<imageComponent>(ent)->img, 100);
     an->addStep(au, 500);
-    an2->addStep(library._world->Get<imageComponent>(ent)->img, 100);
+    an2->addStep(library._world->Get<imageComponent>(ent)->img, 1);
     library.aux=new command();
     library.aux->addActionComponent(new innerAnimationCommandComponent(an));
     library.aux->addActionComponent(new teleportCommandComponent(10));
+    library.aux->addActionComponent(new setCurrentCommandComponent());
     library.aux->addActionComponent(new innerAnimationCommandComponent(an2));
+    library.aux->addActionComponent(new resetCurrentCommandComponent());
     //library.an->addStep(library._world->Get<imageComponent>(ent)->img, 1);
     //library.an->addStep(library._world->Get<imageComponent>(ent)->img, 100);
     library._game->initGame();

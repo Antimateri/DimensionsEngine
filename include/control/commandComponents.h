@@ -34,6 +34,28 @@ public:
     commandComponent* const replicate();
 };
 
+class setCurrentCommandComponent: public commandComponent{
+public:
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se paga el precio y se comprueba si puede realizarlo (en ese orden)
+    bool const accepted(command* _command, const game* _game);
+    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new setCurrentCommandComponent();}
+};
+
+class resetCurrentCommandComponent: public commandComponent{
+public:
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se paga el precio y se comprueba si puede realizarlo (en ese orden)
+    bool const accepted(command* _command, const game* _game);
+    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new resetCurrentCommandComponent();}
+};
+
 class delayCommandComponent: public commandComponent{
 private:
     float ms;

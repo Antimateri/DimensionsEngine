@@ -5,20 +5,19 @@
 void innerAnimation::begin(){
     it=steps.begin();
     counter=0;
-    library._world->Get<imageComponent>(source)->img=it->second;
     this->order=1;
 }
 
 bool innerAnimation::step(){
     if(this->order){
-        if(counter>=it->first){
-            counter=0;
-            it++;
+        if(counter<=0){
             if(it==steps.end())return 1;
+            counter=it->first;
             library._world->Get<imageComponent>(source)->img=it->second;
+            it++;
         }
         else
-            counter++;
+            counter--;
         return 0;
     }
     else{
@@ -48,6 +47,6 @@ void innerAnimation::setSource(EntityID source){
 
 void innerAnimation::addStep(textureManager::imgDir frame, float ms){
     int dur=std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);
-    this->ms+=dur;
+    this->ms+=ms;
     steps.push_back({dur,frame});
 }
