@@ -53,11 +53,11 @@ bool toRenderEntities::processInput(SDL_Event& _event){
         return 1;
     }
     if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_LEFT){
-        command* _move=library.aux->replicate();
+        /*command* _move=library.aux->replicate();
         _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
-        _move->addInfoComponent(new EntitySourceCommandComponent(library._player));
-        //command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player);
-        library._game->addCommand(_move);
+        _move->addInfoComponent(new EntitySourceCommandComponent(library._player));*/
+        command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player);
+        library._game->addCommand(move);
         return 1;
     }
     return 0;

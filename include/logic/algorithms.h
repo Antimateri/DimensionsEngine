@@ -16,6 +16,7 @@ struct cell {
     int parent_i, parent_j;
     // f = g + h
     double f, g, h;
+    int rad;
 };
  
 // A Utility Function to calculate the 'h' heuristics.

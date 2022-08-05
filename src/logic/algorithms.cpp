@@ -1,6 +1,8 @@
 #include "logic/algorithms.h"
 #include "logic/objects/component.h"
 
+#define MAX_RADIUS 30
+
 // A Utility Function to calculate the 'h' heuristics.
 double calculateHValue(int x, int y, Pair dest)
 {
@@ -47,7 +49,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
  
     // Initialising the parameters of the starting node
     long long has=map.hashCoord(beginx, beginy);
-    cellDetails.insert({has,{beginx, beginy, 0, 0, 0}});
+    cellDetails.insert({has,{beginx, beginy, 0, 0, 0, 0}});
  
     /*
      Create an open list having information as-
@@ -101,6 +103,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
  
         // To store the 'g', 'h' and 'f' of the 8 successors
         double gNew, hNew, fNew;
+        int radNew;
  
         //----------- 1st Successor (North) ------------
  
@@ -112,7 +115,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
             if (i-1 == endx && j == endy) {
                 // Set the Parent of the destination cell
                 if(!cellDetails.count(has))
-                    cellDetails.insert({has,{i, j, 0, 0, 0}});
+                    cellDetails.insert({has,{i, j, 0, 0, 0, 0}});
                 else{
                     cellDetails[has].parent_i=i;
                     cellDetails[has].parent_j=j;
@@ -127,6 +130,8 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 gNew = cellDetails[map.hashCoord(i,j)].g + 1.0;
                 hNew = calculateHValue(i - 1, j, {endx, endy});
                 fNew = gNew + hNew;
+                radNew = cellDetails[map.hashCoord(i,j)].rad + 1;
+
  
                 // If it isn’t on the open list, add it to
                 // the open list. Make the current square
@@ -136,21 +141,24 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (!cellDetails.count(has)){
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i - 1, j)));
-                    cellDetails.insert({has,{i, j, fNew, gNew, hNew}});
-                }
-                else if(cellDetails[has].f > fNew) {
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i - 1, j)));
- 
-                    // Update the details of this cell
-                    cellDetails[has].f = fNew;
-                    cellDetails[has].g = gNew;
-                    cellDetails[has].h = hNew;
-                    cellDetails[has].parent_i = i;
-                    cellDetails[has].parent_j = j;
+                if(radNew<MAX_RADIUS){
+                    if (!cellDetails.count(has)){
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i - 1, j)));
+                        cellDetails.insert({has,{i, j, fNew, gNew, hNew, radNew}});
+                    }
+                    else if(cellDetails[has].f > fNew) {
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i - 1, j)));
+    
+                        // Update the details of this cell
+                        cellDetails[has].f = fNew;
+                        cellDetails[has].g = gNew;
+                        cellDetails[has].h = hNew;
+                        cellDetails[has].rad = std::min(cellDetails[has].rad, radNew);
+                        cellDetails[has].parent_i = i;
+                        cellDetails[has].parent_j = j;
+                    }
                 }
             }
         }
@@ -165,7 +173,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
             if (i+1 == endx && j == endy) {
                 // Set the Parent of the destination cell
                 if(!cellDetails.count(has))
-                    cellDetails.insert({has,{i, j, 0, 0, 0}});
+                    cellDetails.insert({has,{i, j, 0, 0, 0, 0}});
                 else{
                     cellDetails[has].parent_i=i;
                     cellDetails[has].parent_j=j;
@@ -180,6 +188,8 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 gNew = cellDetails[map.hashCoord(i,j)].g + 1.0;
                 hNew = calculateHValue(i + 1, j, {endx, endy});
                 fNew = gNew + hNew;
+                radNew = cellDetails[map.hashCoord(i,j)].rad + 1;
+
  
                 // If it isn’t on the open list, add it to
                 // the open list. Make the current square
@@ -189,21 +199,24 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (!cellDetails.count(has)){
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i + 1, j)));
-                    cellDetails.insert({has,{i, j, fNew, gNew, hNew}});
-                }
-                else if(cellDetails[has].f > fNew) {
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i + 1, j)));
- 
-                    // Update the details of this cell
-                    cellDetails[has].f = fNew;
-                    cellDetails[has].g = gNew;
-                    cellDetails[has].h = hNew;
-                    cellDetails[has].parent_i = i;
-                    cellDetails[has].parent_j = j;
+                if(radNew<MAX_RADIUS){
+                    if (!cellDetails.count(has)){
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i + 1, j)));
+                        cellDetails.insert({has,{i, j, fNew, gNew, hNew, radNew}});
+                    }
+                    else if(cellDetails[has].f > fNew) {
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i + 1, j)));
+    
+                        // Update the details of this cell
+                        cellDetails[has].f = fNew;
+                        cellDetails[has].g = gNew;
+                        cellDetails[has].h = hNew;
+                        cellDetails[has].rad = std::min(cellDetails[has].rad, radNew);
+                        cellDetails[has].parent_i = i;
+                        cellDetails[has].parent_j = j;
+                    }
                 }
             }
         }
@@ -218,7 +231,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
             if (i == endx && j+1 == endy) {
                 // Set the Parent of the destination cell
                 if(!cellDetails.count(has))
-                    cellDetails.insert({has,{i, j, 0, 0, 0}});
+                    cellDetails.insert({has,{i, j, 0, 0, 0, 0}});
                 else{
                     cellDetails[has].parent_i=i;
                     cellDetails[has].parent_j=j;
@@ -233,6 +246,8 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 gNew = cellDetails[map.hashCoord(i,j)].g + 1.0;
                 hNew = calculateHValue(i, j + 1, {endx, endy});
                 fNew = gNew + hNew;
+                radNew = cellDetails[map.hashCoord(i,j)].rad + 1;
+
  
                 // If it isn’t on the open list, add it to
                 // the open list. Make the current square
@@ -242,21 +257,24 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (!cellDetails.count(has)){
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i, j + 1)));
-                    cellDetails.insert({has,{i, j, fNew, gNew, hNew}});
-                }
-                else if(cellDetails[has].f > fNew) {
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i, j + 1)));
- 
-                    // Update the details of this cell
-                    cellDetails[has].f = fNew;
-                    cellDetails[has].g = gNew;
-                    cellDetails[has].h = hNew;
-                    cellDetails[has].parent_i = i;
-                    cellDetails[has].parent_j = j;
+                if(radNew<MAX_RADIUS){
+                    if (!cellDetails.count(has)){
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i, j + 1)));
+                        cellDetails.insert({has,{i, j, fNew, gNew, hNew, radNew}});
+                    }
+                    else if(cellDetails[has].f > fNew) {
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i, j + 1)));
+    
+                        // Update the details of this cell
+                        cellDetails[has].f = fNew;
+                        cellDetails[has].g = gNew;
+                        cellDetails[has].h = hNew;
+                        cellDetails[has].rad = std::min(cellDetails[has].rad, radNew);
+                        cellDetails[has].parent_i = i;
+                        cellDetails[has].parent_j = j;
+                    }
                 }
             }
         }
@@ -271,7 +289,7 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
             if (i == endx && j-1 == endy) {
                 // Set the Parent of the destination cell
                 if(!cellDetails.count(has))
-                    cellDetails.insert({has,{i, j, 0, 0, 0}});
+                    cellDetails.insert({has,{i, j, 0, 0, 0, 0}});
                 else{
                     cellDetails[has].parent_i=i;
                     cellDetails[has].parent_j=j;
@@ -286,6 +304,8 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 gNew = cellDetails[map.hashCoord(i,j)].g + 1.0;
                 hNew = calculateHValue(i, j - 1, {endx, endy});
                 fNew = gNew + hNew;
+                radNew = cellDetails[map.hashCoord(i,j)].rad + 1;
+
  
                 // If it isn’t on the open list, add it to
                 // the open list. Make the current square
@@ -295,21 +315,24 @@ bool getPath(World::mapRepresentation& map, int beginx, int beginy, int endx, in
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (!cellDetails.count(has)){
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i, j - 1)));
-                    cellDetails.insert({has,{i, j, fNew, gNew, hNew}});
-                }
-                else if(cellDetails[has].f > fNew) {
-                    openList.insert(std::make_pair(
-                        fNew, std::make_pair(i, j - 1)));
- 
-                    // Update the details of this cell
-                    cellDetails[has].f = fNew;
-                    cellDetails[has].g = gNew;
-                    cellDetails[has].h = hNew;
-                    cellDetails[has].parent_i = i;
-                    cellDetails[has].parent_j = j;
+                if(radNew<MAX_RADIUS){
+                    if (!cellDetails.count(has)){
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i, j - 1)));
+                        cellDetails.insert({has,{i, j, fNew, gNew, hNew, radNew}});
+                    }
+                    else if(cellDetails[has].f > fNew) {
+                        openList.insert(std::make_pair(
+                            fNew, std::make_pair(i, j - 1)));
+    
+                        // Update the details of this cell
+                        cellDetails[has].f = fNew;
+                        cellDetails[has].g = gNew;
+                        cellDetails[has].h = hNew;
+                        cellDetails[has].rad = std::min(cellDetails[has].rad, radNew);
+                        cellDetails[has].parent_i = i;
+                        cellDetails[has].parent_j = j;
+                    }
                 }
             }
         }
