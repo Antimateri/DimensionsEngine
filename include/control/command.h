@@ -8,6 +8,7 @@ struct command{
 private:
 
     std::list<commandComponent*>::iterator it;
+    std::list<commandComponent*>::iterator currentState;
 
 public:
     EntityID source;
@@ -32,7 +33,7 @@ public:
     
     command* replicate();
     
-    //bool Accepted(game* _game);
+    bool Accepted(game* _game);
 
     void addActionComponent(commandComponent* _component);
 

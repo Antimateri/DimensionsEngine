@@ -77,8 +77,10 @@ void game::processInput(){
 }
 
 void game::addCommand(command* c){
-    c->ready();
-    if(waiting.empty())
-        waiting.push_front(std::list<command*>());
-    waiting.front().push_back(c);
+    if(c->Accepted(this)){
+        c->ready();
+        if(waiting.empty())
+            waiting.push_front(std::list<command*>());
+        waiting.front().push_back(c);
+    }
 }

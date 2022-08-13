@@ -50,3 +50,16 @@ void innerAnimation::addStep(textureManager::imgDir frame, float ms){
     this->ms+=ms;
     steps.push_back({dur,frame});
 }
+
+void innerAnimation::abort(){
+    it=steps.end();
+    it--;
+}
+
+innerAnimation* innerAnimation::replicate(){
+    innerAnimation* out = new innerAnimation();
+    out->steps=std::list<std::pair<int,textureManager::imgDir>>(this->steps);
+    out->source=this->source;
+    out->ms=this->ms;
+    return out;
+}

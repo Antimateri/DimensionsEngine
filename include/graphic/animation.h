@@ -29,4 +29,8 @@ public:
 
     void addStep(textureManager::imgDir frame, float ms);
 
+    void abort();
+
+    innerAnimation* replicate();
+
 };
