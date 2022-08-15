@@ -30,5 +30,4 @@ public:
 
     void removeLastLayer();
 
-    void addAnimation(innerAnimation* in);
 };

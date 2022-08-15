@@ -40,3 +40,23 @@ public:
 
     bool processInput(SDL_Event& _event);
 };
+
+class toRenderInnerAnimation: public toRender{
+private:
+
+    std::list<innerAnimation*> todo;
+    bool running=1;
+public:
+
+    ~toRenderInnerAnimation(){};
+    
+    void draw(SDL_Renderer* r);
+
+    bool processInput(SDL_Event& _event){return 0;};
+
+    void addInnerAnimation(innerAnimation* in);
+
+    void pause();
+
+    void start();
+};

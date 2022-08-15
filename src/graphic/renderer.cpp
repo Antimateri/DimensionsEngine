@@ -1,14 +1,5 @@
 #include "graphic/renderer.h"
 
-void Renderer::processAnimations(){
-    auto it=todo.begin();
-    while(it!=todo.end())
-        if((*it)->step())
-            it=todo.erase(it);
-        else
-            it++;
-}
-
 Renderer::~Renderer(){
     auto it=render.begin();
     for(;it!=render.end();it++)
@@ -16,7 +7,6 @@ Renderer::~Renderer(){
 }
 
 void Renderer::draw(SDL_Renderer* r){
-    processAnimations();
     auto it=render.begin();
     for(;it!=render.end();it++){
         (*it)->draw(r);
@@ -36,8 +26,4 @@ void Renderer::addLayer(toRender* newRender){
 
 void Renderer::removeLastLayer(){
     render.pop_back();
-}
-
-void Renderer::addInnerAnimation(innerAnimation* in){
-    todo.push_back(in);
 }

@@ -6,8 +6,9 @@
 int const innerAnimationCommandComponent::action(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;
     an->setSource(_command->source);
+    an->setSpeed(1);
     an->begin();
-    library._mainWindow->addAnimation(an);
+    library._animationManager->addInnerAnimation(an);
     return an->getSteps();
 }
 
@@ -15,7 +16,8 @@ int const innerAnimationCommandComponent::action(command* _command, game* _game)
 int const innerAnimationCommandComponent::reverseAction(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;
     an->setSource(_command->source);
-    an->reverseBegin();
-    library._mainWindow->addAnimation(an);
+    an->setSpeed(-1);
+    an->begin();
+    library._animationManager->addInnerAnimation(an);
     return an->getSteps();
 }

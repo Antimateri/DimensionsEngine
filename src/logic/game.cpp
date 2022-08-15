@@ -13,6 +13,8 @@ game::game(){
     
     library._mainWindow=new mainWindow();
     library._mainWindow->addLayer(new toRenderEntities());
+    library._animationManager=new toRenderInnerAnimation();
+    library._mainWindow->addLayer(library._animationManager);
 }
 
 game::~game(){

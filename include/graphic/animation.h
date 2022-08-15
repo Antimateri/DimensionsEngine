@@ -4,16 +4,18 @@
 #include "graphic/textureManager.h"
 
 
-//TODO search a place to die
-//TODO reverse
+//TODO search for a place to die
 class innerAnimation{
 private:
-    std::list<std::pair<int,textureManager::imgDir>> steps;
-    std::list<std::pair<int,textureManager::imgDir>>::iterator it;
-    int counter;
+    std::list<std::pair<float,textureManager::imgDir>> steps;
+    std::list<std::pair<float,textureManager::imgDir>>::iterator it;
+    float counter;
     EntityID source;
     float ms;
     bool order;
+    int ntimes=1;
+    int loop;
+    float speed=1;
 
 public:
 
@@ -23,7 +25,9 @@ public:
 
     bool step();
 
-    void reverseBegin();
+    void setSpeed(float speed);
+
+    void setRepeats(int ntimes);
 
     void setSource(EntityID source);
 

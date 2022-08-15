@@ -67,7 +67,3 @@ void mainWindow::addLayer(toRender* render){
 void mainWindow::removeLastLayer(){
 	_render.removeLastLayer();
 }
-
-void mainWindow::addAnimation(innerAnimation* in){
-	_render.addInnerAnimation(in);
-}

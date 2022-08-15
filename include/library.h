@@ -5,9 +5,8 @@ class World;
 class mainWindow;
 class textureManager;
 struct command;
-
-//quitar
 class innerAnimation;
+class toRenderInnerAnimation;
 
 typedef unsigned long long EntityID;
 
@@ -18,9 +17,11 @@ struct libra{
     mainWindow* _mainWindow;
     textureManager* _textureManager;
     EntityID _player;
+    toRenderInnerAnimation* _animationManager;
 
     //quitar
     command* aux; 
+
 
 };
 
