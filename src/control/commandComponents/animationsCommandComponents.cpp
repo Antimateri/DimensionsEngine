@@ -1,7 +1,7 @@
-#include "control/commandComponents.h"
+#include "control/commandComponents/commandComponents.h"
 #include "control/command.h"
-#include "logic/objects/component.h"
-#include "graphic/animation.h"
+#include "logic/objects/components/component.h"
+#include "graphic/animation/animation.h"
 
 int const innerAnimationCommandComponent::action(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;

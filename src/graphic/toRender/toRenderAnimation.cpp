@@ -1,5 +1,5 @@
-#include "graphic/toRender.h"
-#include "graphic/animation.h"
+#include "graphic/toRender/toRender.h"
+#include "graphic/animation/animation.h"
 
 void toRenderInnerAnimation::draw(SDL_Renderer* r){
     if(running){

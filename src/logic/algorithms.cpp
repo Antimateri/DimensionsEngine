@@ -1,5 +1,5 @@
 #include "logic/algorithms.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 
 #define MAX_RADIUS 30
 

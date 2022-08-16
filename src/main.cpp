@@ -1,7 +1,8 @@
 #include "logic/game.h"
 #include "logic/objects/world.h"
-#include "logic/objects/component.h"
-#include "graphic/animation.h"
+#include "logic/objects/components/component.h"
+#include "graphic/animation/animation.h"
+#include "control/commandComponents/commandComponents.h"
 
 int main(){
     game _game;

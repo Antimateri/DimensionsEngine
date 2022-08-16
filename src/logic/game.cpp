@@ -1,6 +1,7 @@
 #include "logic/game.h"
 #include "logic/objects/world.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
+#include "control/commandComponents/commandComponents.h"
 
 struct {
     SDL_Event pause;

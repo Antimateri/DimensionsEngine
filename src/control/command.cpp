@@ -1,4 +1,5 @@
 #include "control/command.h"
+#include "control/commandComponents/commandComponents.h"
 
 command::~command(){
     it=_components.begin();

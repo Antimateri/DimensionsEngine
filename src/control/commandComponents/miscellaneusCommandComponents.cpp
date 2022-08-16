@@ -1,7 +1,7 @@
 
-#include "control/commandComponents.h"
+#include "control/commandComponents/commandComponents.h"
 #include "control/command.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 
 int const setCurrentCommandComponent::action(command* _command, game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)

@@ -1,4 +1,4 @@
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 
 void directions::dir2coord(int dir, int &dx, int &dy){
     switch(dir){

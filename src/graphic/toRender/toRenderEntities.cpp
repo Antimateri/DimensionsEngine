@@ -1,9 +1,9 @@
-#include "graphic/toRender.h"
+#include "graphic/toRender/toRender.h"
 #include "logic/objects/world.h"
 #include "graphic/mainWindow.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 #include "control/command.h"
-#include "control/commandComponents.h"
+#include "control/commandComponents/commandComponents.h"
 #include "logic/algorithms.h"
 
 void toRenderEntities::draw(SDL_Renderer* r){

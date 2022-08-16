@@ -1,5 +1,5 @@
 #include "logic/objects/world.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 
 bool World::mapRepresentation::getBlock(int dir, int x, int y){
         for(EntityID i: map[x][y]){

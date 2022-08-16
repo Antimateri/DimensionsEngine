@@ -1,6 +1,6 @@
-#include "control/commandComponents.h"
+#include "control/commandComponents/commandComponents.h"
 #include "control/command.h"
-#include "logic/objects/component.h"
+#include "logic/objects/components/component.h"
 
 int const teleportCommandComponent::action(command* _command, game* _game){
     prevx=library._world->Get<positionComponent>(_command->source)->tileX;
