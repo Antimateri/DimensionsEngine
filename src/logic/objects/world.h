@@ -8,6 +8,10 @@ private:
 
     int s_componentCounter;
 
+    std::queue<EntityIndex> freeEntities;
+
+public:
+
     struct ComponentPool{
         ComponentPool(size_t elementsize){
             elementSize = elementsize;
@@ -26,12 +30,9 @@ private:
         size_t elementSize{ 0 };
         std::unordered_set<EntityIndex> occupied;
     };
-
+    
     std::vector<EntityDesc> entities;
-    std::queue<EntityIndex> freeEntities;
     std::vector<ComponentPool*> componentPools;
-
-public:
 
     struct mapRepresentation{
 
@@ -59,9 +60,13 @@ public:
 
         bool getBlock(int dir, int x, int y);
 
+        bool isValidEntity(int x, int y){
+            return isValid(x,y) && !map[x][y].empty() && map[x][y].front()!=INVALID_ENTITY;
+        }
+
         template<typename T>
         T* Get(int x, int y){
-            if(map[x][y].empty())
+            if(!isValidEntity(x,y))
                 return nullptr;
             return super->Get<T>(map[x][y].back());
         }
@@ -71,14 +76,6 @@ public:
     mapRepresentation _map;
 
     SDL_Texture* background;
-
-    enum Direction{
-        up,
-        down,
-        right,
-        left,
-        undefined
-    };
 
     World(int nXTiles, int nYTiles);
 

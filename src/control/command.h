@@ -8,6 +8,8 @@ private:
 
     std::list<commandComponent*>::iterator it;
     std::list<commandComponent*>::iterator currentState;
+    int totalTime=0;
+    unsigned int effect=0;
 
 public:
     EntityID source;
@@ -34,12 +36,19 @@ public:
     
     bool Accepted(game* _game);
 
-    void addActionComponent(commandComponent* _component);
+    bool ReverseAccepted(game* _game);
 
-    void addInfoComponent(commandComponent* _component);
+    command* addActionComponent(commandComponent* _component);
+
+    command* addInfoComponent(commandComponent* _component);
+
+    void removeInfoComponent();
 
     ~command();
 
     bool abort();
+
+    unsigned int const getEffect();
     
+    unsigned int const getTime();
 };

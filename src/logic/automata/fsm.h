@@ -1,29 +1,31 @@
+#pragma once
+
 #include "logic/automata/states.h"
 
 template <typename T>
 class FSM{
-private:
+protected:
     state* currentState;
     std::vector<T*> states;
 
 public:
 
-    FSM(){}
-    FSM(int nstates){
-        states.reserve(nstates);
-        for(int i=0;i<nstates;i++){
-            states[i] = new T(i);
-        }
-        FSM();
+    FSM(){
+        states.push_back(new T(0));
+        currentState=states[0];
     }
 
     T* const getCurrentState(){
-        return static_cast<T>(currentState);
+        return static_cast<T*>(currentState);
     }
 
     T* const getState(int id){
         if(id>=states.size())return nullptr;
         return states[id];
+    }
+
+    void setCurrentState(T* state){
+        currentState=state;
     }
 
     T* createState(){
@@ -32,12 +34,18 @@ public:
         return out;
     }
 
-    void nextState(std::string input){
+    void nextState(int input){
         currentState = currentState->nextState(input);
     }
 
     ~FSM(){
         for(T* i : states)
             delete i;
+    }
+
+    FSM<T>* const practicalReplicate(){
+        FSM<T>* out=new FSM<T>();
+        out->currentState=currentState;
+        return out;
     }
 };

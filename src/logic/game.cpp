@@ -2,6 +2,7 @@
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
 #include "control/commandComponents/commandComponents.h"
+#include "logic/engines/behaviour/behaviourEngine.h"
 
 struct {
     SDL_Event pause;
@@ -13,9 +14,9 @@ game::game(){
     library._world=new World(1000, 1000);
     
     library._mainWindow=new mainWindow();
-    library._mainWindow->addLayer(new toRenderEntities());
     library._animationManager=new toRenderInnerAnimation();
     library._mainWindow->addLayer(library._animationManager);
+    library._mainWindow->addLayer(new toRenderEntities());
 }
 
 game::~game(){
@@ -31,13 +32,6 @@ bool game::initGame(){
 void game::gameLoop(){
     while(_gameState==gameState::Run){
         library._mainWindow->presentScene();
-        /*for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++){
-                std::cout<<library._world->map[j][i]<<' ';
-            }
-            std::cout<<std::endl;
-        }
-        std::cout<<std::endl;*/
         processInput();
         run();
         SDL_Delay( 1000/FPS );
@@ -45,6 +39,8 @@ void game::gameLoop(){
 }
 
 void game::run(){
+    behaviourEngine(library._world);
+
     if(waiting.empty())return;
 
     for(auto c : waiting.front()){
@@ -80,7 +76,9 @@ void game::processInput(){
 }
 
 void game::addCommand(command* c){
-    if(c->Accepted(this)){
+    bool val=c->Accepted(this);
+    if(val){
+        c->ReverseAccepted(this);
         c->ready();
         if(waiting.empty())
             waiting.push_front(std::list<command*>());

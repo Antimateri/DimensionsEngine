@@ -49,13 +49,18 @@ command* command::replicate(){
 }
     
 bool command::Accepted(game* _game){
+    if(_components.size()==0)return 0;
     bool out=1;
-    auto it=_components.begin();
+    it=_components.begin();
     for(;it!=_components.end();it++)
         if(!(*it)->accepted(this,_game)){
             out=0;
             break;
         }
+    return out;
+}
+
+bool command::ReverseAccepted(game* _game){
     it--;
     for(;it!=_components.begin();it--)
         (*it)->reverseAccepted(this,_game);
@@ -63,12 +68,22 @@ bool command::Accepted(game* _game){
     return 1;
 }
 
-void command::addActionComponent(commandComponent* _component){
+command* command::addActionComponent(commandComponent* _component){
     _components.push_back(_component);
+    this->totalTime+=_component->getTime();
+    if(_component->getEffect()!=0){
+        effect=_component->getEffect();
+    }
+    return this;
 }
 
-void command::addInfoComponent(commandComponent* _component){
+command* command::addInfoComponent(commandComponent* _component){
     _components.push_front(_component);
+    return this;
+}
+
+void command::removeInfoComponent(){
+    _components.pop_front();
 }
 
 bool command::abort(){
@@ -80,4 +95,12 @@ bool command::abort(){
         return 1;
     }
     return 0;
+}
+
+unsigned int const command::getEffect(){
+    return effect;
+}
+    
+unsigned int const command::getTime(){
+    return totalTime;
 }

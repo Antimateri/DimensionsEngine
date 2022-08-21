@@ -1,15 +1,5 @@
 #pragma once
-
-struct game;
-class World;
-class mainWindow;
-class textureManager;
-struct command;
-class innerAnimation;
-class toRenderInnerAnimation;
-class commandComponent;
-
-typedef unsigned long long EntityID;
+#include "definitions.h"
 
 struct libra{
 

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "logic/objects/components/component.h"
 #include "graphic/animation/animation.h"
+#include "logic/automata/fsm.h"
 
 class commandComponent{
 public:
@@ -14,26 +15,8 @@ public:
     virtual void const reverseAccepted(command* _command, const game* _game){}
     virtual commandComponent* const replicate(){return new commandComponent();}
     virtual void abort(){}
-};
-
-class teleportCommandComponent: public commandComponent{
-private:
-
-    int APpT=10;//action points per tile
-    int APtaken; //action points taken
-
-    int prevx, prevy;
-
-public:
-
-    teleportCommandComponent(int APpT):APpT(APpT){}
-
-    int const action(command* _command, game* _game);
-    int const reverseAction(command* _command, game* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game);
-    void const reverseAccepted(command* _command, const game* _game);
-    commandComponent* const replicate();
+    virtual int const getTime(){return 0;}
+    virtual unsigned int const getEffect(){return 0;}
 };
 
 class setCurrentCommandComponent: public commandComponent{
@@ -69,6 +52,24 @@ public:
     int const action(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
     int const reverseAction(command* _command, game* _game){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
     commandComponent* const replicate(){return new delayCommandComponent(ms);}
+    int const getTime(){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
+};
+
+class nextGoalStateCommandComponent: public commandComponent{
+private:
+    int nextState;
+    bool source_target;
+
+    goalState* prev;
+    
+public:
+
+    nextGoalStateCommandComponent(int nexState, bool source_target): nextState(nextState), source_target(source_target){}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    commandComponent* const replicate(){return new nextGoalStateCommandComponent(nextState, source_target);}
+
 };
 
 class targetCommandComponent: public commandComponent{
@@ -133,5 +134,47 @@ public:
     void const reverseAccepted(command* _command, const game* _game){}
     commandComponent* const replicate(){return new innerAnimationCommandComponent(an->replicate());}
     void abort(){an->abort();}
+    int const getTime(){return an->getSteps();}
+};
+
+class teleportCommandComponent: public commandComponent{
+private:
+
+    int APpT=10;//action points per tile
+    int APtaken; //action points taken
+
+    int prevx, prevy;
+
+public:
+
+    teleportCommandComponent(int APpT):APpT(APpT){}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
+    bool const accepted(command* _command, const game* _game);
+    void const reverseAccepted(command* _command, const game* _game);
+    commandComponent* const replicate();
+    unsigned int const getEffect();
+};
+
+class randomMoveCommandComponent: public commandComponent{
+private:
+
+    int dirTaken;
+    int APCost;
+
+public:
+
+    randomMoveCommandComponent(int APCost):APCost(APCost){}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
+    bool const accepted(command* _command, const game* _game);
+    void const reverseAccepted(command* _command, const game* _game);
+    commandComponent* const replicate(){return new randomMoveCommandComponent(APCost);}
+    unsigned int const getEffect();
+
 };
 

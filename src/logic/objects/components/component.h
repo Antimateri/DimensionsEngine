@@ -3,18 +3,20 @@
 #include "common.h"
 #include "logic/objects/world.h"
 #include "graphic/textureManager.h"
+#include "logic/automata/fsm.h"
 
 namespace directions{
         const int center=1;
         const int left=2;
-        const int right=4;
+        const int right=16;
         const int top=8;
-        const int bottom=16;
+        const int bottom=4;
         const int all=31;
 
 
     void dir2coord(int dir, int &dx, int &dy);
 
+    int getOpposite(int dir);
 }
 
 class ExistsComponent{};
@@ -79,6 +81,20 @@ public:
     command* current=nullptr;
 };
 
+class posibleActionsComponent{
+public:
+    std::list<command*> posibilities;
+};
+
+class goalAutomataComponent{
+public:
+
+    FSM<goalState> goals;
+
+    goalAutomataComponent(){}
+
+};
+
 class valueComponent{
 private:
     int val;
@@ -89,8 +105,8 @@ public:
     void setmax(int maxi){maxVal=maxi;val=maxi;}
     const int getVal(){return val;};
     void setVal(int val){this->val=std::max(std::min(val,maxVal),0);}
-    void addVal(int val){this->val=std::min(this->val+val,maxVal);}
-    void subVal(int val){this->val=this->val-val;}
+    void addVal(int val){setVal(this->val+val);}
+    void subVal(int val){setVal(this->val-val);}
     const int getMaxVal(){return maxVal;}
 };
 

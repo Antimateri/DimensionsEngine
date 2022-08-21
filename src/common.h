@@ -3,9 +3,8 @@
 #include <iostream>
 #include <random>
 
-#include "definitions.h"
-#include "logic/dataStructures.h"
 #include "library.h"
+#include "logic/dataStructures.h"
 
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 

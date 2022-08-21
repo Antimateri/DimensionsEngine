@@ -11,3 +11,16 @@
 #define NUMBER_COMMANDS_REMEMBERED 10
 
 #define FPS 31
+
+#define INF 1000000000
+
+struct game;
+class World;
+class mainWindow;
+class textureManager;
+struct command;
+class innerAnimation;
+class toRenderInnerAnimation;
+class commandComponent;
+
+typedef unsigned long long EntityID;

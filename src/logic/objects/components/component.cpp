@@ -24,6 +24,18 @@ void directions::dir2coord(int dir, int &dx, int &dy){
     }
 }
 
+int directions::getOpposite(int dir){
+    int out=0;
+    int c=1;
+    while(dir>0){
+        if(dir%2)
+            out+=32/c;
+        c*=2;
+        dir=dir>>1;
+    }
+    return out;
+}
+
 positionComponent::~positionComponent(){
     if(_world->_map.isValid(tileX, tileY))
         _world->_map.map[this->tileX][this->tileY].erase(pos);
@@ -51,11 +63,13 @@ positionComponent::moveError positionComponent::changePos(int dx, int dy, World*
 }
 
 positionComponent::moveError positionComponent::moveInDirection(int dir, World* world, EntityID id){
-    if(!world->_map.map[tileX][tileY].empty() && world->_map.Get<blockComponent>(tileX, tileY)!=nullptr \
-                                        && world->_map.getBlock(directions::all, tileX, tileY)){
-        return moveError::PositionOccupied;
-    }
     int x,y;
     directions::dir2coord(dir,x,y);
+    x+=tileX;
+    y+=tileY;
+    if(!world->_map.map[x][y].empty() && world->_map.Get<blockComponent>(x, y)!=nullptr \
+                                        && world->_map.getBlock(dir, x, y)){
+        return moveError::PositionOccupied;
+    }
     return moveTo(x, y, world, id);
 }

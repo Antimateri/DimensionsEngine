@@ -8,18 +8,22 @@ struct worldView{
     worldView(World& world): world(&world){
         if (sizeof...(ComponentTypes) == 0){
             all = true;
-            it=world.componentPools[0].occupied.begin();
-            end=world.componentPools[0].occupied.end();
+            it=world.componentPools[0]->occupied.begin();
+            ending=world.componentPools[0]->occupied.end();
         }
         else{
-            int componentIds[] = { 0, GetId<ComponentTypes>() ... };
+            unsigned int componentIds[] = { 0, world.GetId<ComponentTypes>() ... };
             int mini=MAX_COMPONENTS+1;
             for (int i = 1; i < (sizeof...(ComponentTypes) + 1); i++){
-                componentMask.set(componentIds[i]);
-                if(world.componentPools[componentIds[i]].occupied.size()<mini){
-                    mini=world.componentPools[componentIds[i]].occupied.size();
-                    it=world.componentPools[componentIds[i]].occupied.begin();
-                    end=world.componentPools[componentIds[i]].occupied.end();
+                mask.set(componentIds[i]);
+                if(world.componentPools.size()>componentIds[i] && world.componentPools[componentIds[i]]->occupied.size()<mini){
+                    mini=world.componentPools[componentIds[i]]->occupied.size();
+                    it=world.componentPools[componentIds[i]]->occupied.begin();
+                    ending=world.componentPools[componentIds[i]]->occupied.end();
+                }
+                else if(world.componentPools.size()<=componentIds[i]){
+                    ending=world.componentPools[0]->occupied.end();
+                    it=ending;
                 }
             }
         }
@@ -27,14 +31,14 @@ struct worldView{
 
     struct Iterator{
 
-        Iterator(World* pScene, std::unordered_set<EntityIndex>::iterator it, std::unordered_set<EntityIndex>::iterator end, ComponentMask mask, bool all) : pScene(pScene), it(it), end(end), mask(mask), all(all) {}
+        Iterator(World* pScene, std::unordered_set<EntityIndex>::iterator it, std::unordered_set<EntityIndex>::iterator ending, ComponentMask mask, bool all) : pScene(pScene), it(it), ending(ending), mask(mask), all(all) {}
 
         EntityID operator*() const {
             return pScene->entities[*it].id; 
         }
 
         bool operator==(const Iterator& other) const{
-            return *it == *(other.it) || it == end;
+            return (it != ending && (other.it) != other.ending && *it == *(other.it)) || (it == ending && (other.it) == other.ending);
         }
 
         bool operator!=(const Iterator& other) const{
@@ -47,32 +51,34 @@ struct worldView{
 
         Iterator& operator++(){
             do{
-                it++;
-            } while (it!=end && !ValidIndex());
+                ++it;
+            } while (it!=ending && !ValidIndex());
             return *this;
         }
 
+        Iterator operator++(int) { return ++(*this);}//Iterator tmp = *this; ++(*this); return tmp; }
+
         std::unordered_set<EntityIndex>::iterator it;
-        std::unordered_set<EntityIndex>::iterator end;
+        std::unordered_set<EntityIndex>::iterator ending;
         World* pScene;
         ComponentMask mask;
         bool all{ false };
     };
 
     World* world;
-    ComponentMask<MAX_COMPONENTS> mask;
+    ComponentMask mask;
     std::unordered_set<EntityIndex>::iterator it;
-    std::unordered_set<EntityIndex>::iterator end;
+    std::unordered_set<EntityIndex>::iterator ending;
     bool all{0};
 
-    const Iterator begin() const{
-        while (it!=end && !(mask == (mask & world->entities[*it].mask))){
-            it++;
+    Iterator begin() {
+        while (it!=ending && !(mask == (mask & world->entities[*it].mask))){
+            ++it;
         } 
-        return Iterator(world, it, end, componentMask, all);
+        return Iterator(world, it, ending, mask, all);
     }
 
-    const Iterator end() const{
-        return Iterator(world, end, end, componentMask, all);
+    Iterator end() const{
+        return Iterator(world, ending, ending, mask, all);
     }
 };
