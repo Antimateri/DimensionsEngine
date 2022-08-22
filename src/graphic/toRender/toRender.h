@@ -60,3 +60,23 @@ public:
 
     void start();
 };
+
+class toRenderOuterAnimation: public toRender{
+private:
+
+    std::list<outerAnimation*> todo;
+    bool running=1;
+public:
+
+    ~toRenderOuterAnimation(){};
+    
+    void draw(SDL_Renderer* r);
+
+    bool processInput(SDL_Event& _event){return 0;};
+
+    void addOuterAnimation(outerAnimation* in);
+
+    void pause();
+
+    void start();
+};

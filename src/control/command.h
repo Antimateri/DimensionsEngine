@@ -46,7 +46,7 @@ public:
 
     ~command();
 
-    bool abort();
+    bool abort(game* _game);
 
     unsigned int const getEffect();
     

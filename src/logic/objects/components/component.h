@@ -102,12 +102,12 @@ private:
 
 public:
 
-    void setmax(int maxi){maxVal=maxi;val=maxi;}
-    const int getVal(){return val;};
-    void setVal(int val){this->val=std::max(std::min(val,maxVal),0);}
-    void addVal(int val){setVal(this->val+val);}
-    void subVal(int val){setVal(this->val-val);}
-    const int getMaxVal(){return maxVal;}
+    virtual void setmax(int maxi){maxVal=maxi;val=maxi;}
+    virtual const int getVal(){return val;};
+    virtual void setVal(int val){this->val=std::max(std::min(val,maxVal),0);}
+    virtual void addVal(int val){setVal(this->val+val);}
+    virtual void subVal(int val){setVal(this->val-val);}
+    virtual const int getMaxVal(){return maxVal;}
 };
 
 class healthComponent: public valueComponent{};

@@ -20,7 +20,9 @@ class mainWindow;
 class textureManager;
 struct command;
 class innerAnimation;
+class outerAnimation;
 class toRenderInnerAnimation;
 class commandComponent;
+class toRenderOuterAnimation;
 
 typedef unsigned long long EntityID;

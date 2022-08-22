@@ -8,7 +8,8 @@ struct libra{
     mainWindow* _mainWindow;
     textureManager* _textureManager;
     EntityID _player;
-    toRenderInnerAnimation* _animationManager;
+    toRenderInnerAnimation* _innerAnimationManager;
+    toRenderOuterAnimation* _outerAnimationManager;
 
     //quitar
     command* aux; 

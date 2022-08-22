@@ -6,7 +6,7 @@
 int const setCurrentCommandComponent::action(command* _command, game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr){
         if(library._world->Get<currentActionComponent>(_command->source)->current!=nullptr)
-            library._world->Get<currentActionComponent>(_command->source)->current->abort();
+            library._world->Get<currentActionComponent>(_command->source)->current->abort(_game);
         library._world->Get<currentActionComponent>(_command->source)->current=_command;
     }
     return 0;
@@ -26,6 +26,11 @@ bool const setCurrentCommandComponent::accepted(command* _command, const game* _
     return 0;
 }
 
+void setCurrentCommandComponent::abort(command* _command, const game* _game){
+    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
+        library._world->Get<currentActionComponent>(_command->source)->current=nullptr;
+}
+
 int const resetCurrentCommandComponent::reverseAction(command* _command, game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
         library._world->Get<currentActionComponent>(_command->source)->current=_command;
@@ -43,6 +48,11 @@ bool const resetCurrentCommandComponent::accepted(command* _command, const game*
         return 1;
     }
     return 0;
+}
+
+void resetCurrentCommandComponent::abort(command* _command, const game* _game){
+    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
+        library._world->Get<currentActionComponent>(_command->source)->current=_command;
 }
 
 int const nextGoalStateCommandComponent::action(command* _command, game* _game){

@@ -14,9 +14,11 @@ game::game(){
     library._world=new World(1000, 1000);
     
     library._mainWindow=new mainWindow();
-    library._animationManager=new toRenderInnerAnimation();
-    library._mainWindow->addLayer(library._animationManager);
+    library._innerAnimationManager=new toRenderInnerAnimation();
+    library._mainWindow->addLayer(library._innerAnimationManager);
     library._mainWindow->addLayer(new toRenderEntities());
+    library._outerAnimationManager=new toRenderOuterAnimation();
+    library._mainWindow->addLayer(library._outerAnimationManager);
 }
 
 game::~game(){

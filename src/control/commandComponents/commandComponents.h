@@ -14,7 +14,7 @@ public:
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
     virtual void const reverseAccepted(command* _command, const game* _game){}
     virtual commandComponent* const replicate(){return new commandComponent();}
-    virtual void abort(){}
+    virtual void abort(command* _command, const game* _game){}
     virtual int const getTime(){return 0;}
     virtual unsigned int const getEffect(){return 0;}
 };
@@ -28,6 +28,7 @@ public:
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
     void const reverseAccepted(command* _command, const game* _game){}
     commandComponent* const replicate(){return new setCurrentCommandComponent();}
+    void abort(command* _command, const game* _game);
 };
 
 class resetCurrentCommandComponent: public commandComponent{
@@ -39,6 +40,7 @@ public:
     //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
     void const reverseAccepted(command* _command, const game* _game){}
     commandComponent* const replicate(){return new resetCurrentCommandComponent();}
+    void abort(command* _command, const game* _game);
 };
 
 class delayCommandComponent: public commandComponent{
@@ -133,8 +135,27 @@ public:
     bool const accepted(command* _command, const game* _game){return true;}
     void const reverseAccepted(command* _command, const game* _game){}
     commandComponent* const replicate(){return new innerAnimationCommandComponent(an->replicate());}
-    void abort(){an->abort();}
-    int const getTime(){return an->getSteps();}
+    void abort(command* _command, const game* _game){an->abort();}
+};
+
+class outerAnimationCommandComponent: public commandComponent{
+private:
+
+    outerAnimation* an;
+
+public:
+
+    outerAnimationCommandComponent(outerAnimation* an):an(an){}
+
+    ~outerAnimationCommandComponent(){delete an;}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
+    bool const accepted(command* _command, const game* _game){return true;}
+    void const reverseAccepted(command* _command, const game* _game){}
+    commandComponent* const replicate(){return new outerAnimationCommandComponent(an->replicate());}
+    void abort(command* _command, const game* _game){an->abort();}
 };
 
 class teleportCommandComponent: public commandComponent{

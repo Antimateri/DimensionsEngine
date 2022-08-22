@@ -11,10 +11,20 @@ int command::action(game* _game){
     currentState=_components.end();
     for(;it!=_components.end();it++){
         if(!(*it)->accepted(this,_game)){
+            bool prev=stopable;
+            stopable=1;
+            it--;
+            abort(_game);
+            stopable=prev;
             return -1;
         }
         int code=(*it)->action(this,_game);
         if(code==-1){
+            bool prev=stopable;
+            stopable=1;
+            it--;
+            abort(_game);
+            stopable=prev;
             return -1;
         }
         else if(code>0){
@@ -86,12 +96,14 @@ void command::removeInfoComponent(){
     _components.pop_front();
 }
 
-bool command::abort(){
+bool command::abort(game* _game){
     if(stopable){
+        while(it!=_components.begin()){
+            (*it)->abort(this, _game);
+            it--;
+        }
+        (*it)->abort(this, _game);
         it=_components.end();
-        if(library._world->Get<currentActionComponent>(source)!=nullptr && library._world->Get<currentActionComponent>(source)->current==this)
-            library._world->Get<currentActionComponent>(source)->current=nullptr;
-        (*currentState)->abort();
         return 1;
     }
     return 0;

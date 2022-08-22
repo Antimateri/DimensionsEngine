@@ -37,16 +37,26 @@ int main(){
 
     innerAnimation* an=new innerAnimation();
     innerAnimation* an2=new innerAnimation();
-    an2->addStep(au, 100);
-    an->addStep(library._world->Get<imageComponent>(ent)->img, 100);
-    an->addStep(au, 500);
-    an2->addStep(library._world->Get<imageComponent>(ent)->img, 1);
+    outerAnimation* an3=new outerAnimation();
+    an3->addStep(au,10.0, 10);
+    an3->addStep(au,10.0, -10);
+    an3->addStep(au,10.0, 10);
+    an3->addStep(au,10.0, -10);
+    an3->addStep(au,10.0, 10);
+    an3->addStep(au,10.0, -10);
+    an2->addStep(au, 100.0);
+    an->addStep(library._world->Get<imageComponent>(ent)->img, 100.0);
+    an->addStep(au, 500.0);
+    an2->addStep(library._world->Get<imageComponent>(ent)->img, 1.0);
 
     library.aux=new command();
     library.aux->addActionComponent(new innerAnimationCommandComponent(an));
+    library.aux->addActionComponent(new outerAnimationCommandComponent(an3));
+    library.aux->addActionComponent(new delayCommandComponent(an->getMs()));
     library.aux->addActionComponent(new setCurrentCommandComponent());
     library.aux->addActionComponent(new teleportCommandComponent(10));
     library.aux->addActionComponent(new innerAnimationCommandComponent(an2));
+    library.aux->addActionComponent(new delayCommandComponent(an2->getMs()));
     library.aux->addActionComponent(new resetCurrentCommandComponent());
 
     command* rando= new command();
