@@ -53,9 +53,9 @@ public:
 
     ~positionComponent();
 
-    moveError moveTo(int tileX, int tileY, World* world, EntityID id);
+    moveError moveTo(int tileX, int tileY, World* world, EntityID id, int dir=directions::all);
 
-    moveError changePos(int dx, int dy, World* world, EntityID id);
+    moveError changePos(int dx, int dy, World* world, EntityID id, int dir=directions::all);
 
     moveError moveInDirection(int dir, World* world, EntityID id);
 };

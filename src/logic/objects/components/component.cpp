@@ -41,14 +41,14 @@ positionComponent::~positionComponent(){
         _world->_map.map[this->tileX][this->tileY].erase(pos);
 }
 
-positionComponent::moveError positionComponent::moveTo(int tileX, int tileY, World* world, EntityID id){
+positionComponent::moveError positionComponent::moveTo(int tileX, int tileY, World* world, EntityID id, int dir){
     _world=world;
-    if(!world->_map.map[tileX][tileY].empty() && world->_map.Get<blockComponent>(tileX, tileY)!=nullptr \
-                            && world->_map.getBlock(directions::all, tileX, tileY)){
-        return moveError::PositionOccupied;
-    }
-    else if(!world->_map.isValid(tileX, tileY)){
+    if(!world->_map.isValid(tileX, tileY)){
         return moveError::indexOutOfBound;
+    }
+    else if(!world->_map.map[tileX][tileY].empty() && world->_map.Get<blockComponent>(tileX, tileY)!=nullptr \
+                            && world->_map.getBlock(dir, tileX, tileY)){
+        return moveError::PositionOccupied;
     }
     if(_world->_map.isValid(this->tileX, this->tileY))
         _world->_map.map[this->tileX][this->tileY].erase(pos);
@@ -58,8 +58,8 @@ positionComponent::moveError positionComponent::moveTo(int tileX, int tileY, Wor
     return moveError::succes;
 }
 
-positionComponent::moveError positionComponent::changePos(int dx, int dy, World* world, EntityID id){
-    return moveTo(tileX + dx, tileY + dy, world, id);
+positionComponent::moveError positionComponent::changePos(int dx, int dy, World* world, EntityID id, int dir){
+    return moveTo(tileX + dx, tileY + dy, world, id, dir);
 }
 
 positionComponent::moveError positionComponent::moveInDirection(int dir, World* world, EntityID id){
@@ -67,9 +67,5 @@ positionComponent::moveError positionComponent::moveInDirection(int dir, World* 
     directions::dir2coord(dir,x,y);
     x+=tileX;
     y+=tileY;
-    if(!world->_map.map[x][y].empty() && world->_map.Get<blockComponent>(x, y)!=nullptr \
-                                        && world->_map.getBlock(dir, x, y)){
-        return moveError::PositionOccupied;
-    }
-    return moveTo(x, y, world, id);
+    return moveTo(x, y, world, id, dir);
 }
