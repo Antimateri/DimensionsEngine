@@ -9,6 +9,25 @@ struct {
     SDL_Event exit;
 }controls;
 
+void game::changeGameState(gameState state){
+    if(state==_gameState)
+        return;
+    switch(state){
+        case Run:
+            _gameState=Run;
+            break;
+        case Combat:
+            _gameState=Combat;
+            break;
+        case Stop:
+            _gameState=Stop;
+            break;
+        case Pause:
+            _gameState=Pause;
+            break;
+    }
+}
+
 game::game(){
     library._game=this;
     library._world=new World(100, 100);
@@ -33,10 +52,25 @@ bool game::initGame(){
 }
 
 void game::gameLoop(){
-    while(_gameState==gameState::Run){
-        library._mainWindow->presentScene();
-        processInput();
-        run();
+    while(_gameState!=gameState::Stop){
+        if(_gameState==gameState::Run){
+            library._mainWindow->presentScene();
+            processInput();
+            run();
+        }
+        else if(_gameState==gameState::Pause){
+            library._mainWindow->presentScene();
+            processInput();
+        }
+        else if(_gameState==gameState::Combat && library._world->Get<currentActionComponent>(library._player)->current!=nullptr){
+            library._mainWindow->presentScene();
+            processInput();
+            run();
+        }
+        else if(_gameState==gameState::Combat){
+            library._mainWindow->presentScene();
+            processInput();
+        }
         SDL_Delay( 1000/FPS );
     }
 }
@@ -73,7 +107,13 @@ void game::processInput(){
 			_gameState=gameState::Stop;
             break;
         }
-        else
+        else if(_event.type == SDL_KEYDOWN && _event.key.keysym.sym == SDLK_ESCAPE){
+            if(_gameState==gameState::Pause)
+                this->changeGameState(gameState::Run);
+            else if(_gameState==gameState::Run)
+                this->changeGameState(gameState::Pause);
+        }
+        else if(this->lockInput==false)
             library._mainWindow->processInput(_event);
     }
 }

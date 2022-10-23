@@ -10,11 +10,13 @@ struct game{
 private:
 
     std::list<std::list<command*>> waiting;
+    bool lockInput=false;
 
 public:
 
     enum gameState{
         Run,
+        Combat,
         Stop,
         Pause
     };
@@ -26,6 +28,7 @@ public:
     game();
     ~game();
 
+    void changeGameState(gameState state);
     bool initGame();
     void gameLoop();
     void run();

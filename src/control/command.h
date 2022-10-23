@@ -8,6 +8,7 @@ private:
 
     std::list<commandComponent*>::iterator it;
     std::list<commandComponent*>::iterator currentState;
+    std::list<commandComponent*> _components;
     int totalTime=0;
     unsigned int effect=0;
 
@@ -19,8 +20,6 @@ public:
     int targetX, targetY;
 
     bool stopable;
-
-    std::list<commandComponent*> _components;
 
     command(){source=INVALID_ENTITY;stopable=false;}
 

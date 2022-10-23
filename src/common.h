@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <random>
+#include <string>
 
 #include "library.h"
 #include "logic/dataStructures.h"

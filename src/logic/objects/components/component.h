@@ -71,7 +71,7 @@ public:
     }
 
     bool getBlock(int dir){
-        return type&dir==dir;
+        return (type&dir)==dir;
     }
 
 };
@@ -79,6 +79,11 @@ public:
 class currentActionComponent{
 public:
     command* current=nullptr;
+};
+
+class activationActionComponent{
+public:
+    command* action;
 };
 
 class posibleActionsComponent{
