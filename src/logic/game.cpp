@@ -3,6 +3,8 @@
 #include "logic/objects/components/component.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/engines/behaviour/behaviourEngine.h"
+#include "graphic/mainWindow.h"
+#include "control/command.h"
 
 struct {
     SDL_Event pause;
@@ -119,12 +121,8 @@ void game::processInput(){
 }
 
 void game::addCommand(command* c){
-    bool val=c->Accepted(this);
-    if(val){
-        c->ReverseAccepted(this);
-        c->ready();
-        if(waiting.empty())
-            waiting.push_front(std::list<command*>());
-        waiting.front().push_back(c);
-    }
+    c->ready();
+    if(waiting.empty())
+        waiting.push_front(std::list<command*>());
+    waiting.front().push_back(c);
 }

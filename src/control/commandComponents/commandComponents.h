@@ -9,14 +9,12 @@ class commandComponent{
 public:
     virtual int const action(command* _command, game* _game){return 0;}
     virtual int const reverseAction(command* _command, game* _game){return 0;}
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    virtual bool const accepted(command* _command, const game* _game){return true;}
-    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    virtual void const reverseAccepted(command* _command, const game* _game){}
+    virtual bool hasEffect(command* _command, planningParameter *desiredEffect){return false;}
+    virtual std::unordered_map<int, planningParameter *>& getPreconditions(command* _command, planningParameter *desiredEffect){return *(new std::unordered_map<int, planningParameter *>());}
     virtual commandComponent* const replicate(){return new commandComponent();}
     virtual void abort(command* _command, const game* _game){}
     virtual int const getTime(){return 0;}
-    virtual unsigned int const getEffect(){return 0;}
+    virtual int const getCost(){return 0;}
 };
 
 class setCurrentCommandComponent: public commandComponent{
@@ -24,9 +22,7 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game);
-    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    void const reverseAccepted(command* _command, const game* _game){}
+    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate(){return new setCurrentCommandComponent();}
     void abort(command* _command, const game* _game);
 };
@@ -36,9 +32,7 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game);
-    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    void const reverseAccepted(command* _command, const game* _game){}
+    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate(){return new resetCurrentCommandComponent();}
     void abort(command* _command, const game* _game);
 };
@@ -57,7 +51,7 @@ public:
     int const getTime(){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
 };
 
-class nextGoalStateCommandComponent: public commandComponent{
+/*class nextGoalStateCommandComponent: public commandComponent{
 private:
     int nextState;
     bool source_target;
@@ -72,7 +66,7 @@ public:
     int const reverseAction(command* _command, game* _game);
     commandComponent* const replicate(){return new nextGoalStateCommandComponent(nextState, source_target);}
 
-};
+};*/
 
 class targetCommandComponent: public commandComponent{
 private:
@@ -90,32 +84,8 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game){return true;}
-    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    void const reverseAccepted(command* _command, const game* _game){}
+    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate(){return new targetCommandComponent(targetX, targetY);}
-};
-
-class EntitySourceCommandComponent: public commandComponent{
-private:
-
-    EntityID ent;
-
-    int prevx;
-    int prevy;
-    EntityID prevent;
-
-public:
-
-    EntitySourceCommandComponent(EntityID ent): ent(ent){}
-
-    int const action(command* _command, game* _game);
-    int const reverseAction(command* _command, game* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game){return true;}
-    //llamado en caso de que no pueda realizarlo, se devuelve lo pagado
-    void const reverseAccepted(command* _command, const game* _game){}
-    commandComponent* const replicate(){return new EntitySourceCommandComponent(ent);}
 };
 
 class innerAnimationCommandComponent: public commandComponent{
@@ -132,8 +102,7 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game){return true;}
-    void const reverseAccepted(command* _command, const game* _game){}
+    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate(){return new innerAnimationCommandComponent(an->replicate());}
     void abort(command* _command, const game* _game){an->abort();}
 };
@@ -152,8 +121,7 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game){return true;}
-    void const reverseAccepted(command* _command, const game* _game){}
+    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate(){return new outerAnimationCommandComponent(an->replicate());}
     void abort(command* _command, const game* _game){an->abort();}
 };
@@ -173,10 +141,8 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game);
-    void const reverseAccepted(command* _command, const game* _game);
+    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate();
-    unsigned int const getEffect();
 };
 
 class randomMoveCommandComponent: public commandComponent{
@@ -192,10 +158,28 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game);
-    void const reverseAccepted(command* _command, const game* _game);
+    bool const accepted(command* _command, const game* _game, planningState* userState);
+    bool hasEffect(command* _command, planningParameter *desiredEffect);
+    std::unordered_map<int, planningParameter *>& getPreconditions(command* _command, planningParameter *desiredEffect);
     commandComponent* const replicate(){return new randomMoveCommandComponent(APCost);}
-    unsigned int const getEffect();
+};
 
+class attackCommandComponent: public commandComponent{
+private:
+
+    int damage;
+    int APcost;
+    int range;
+    int dir;
+    
+public:
+
+    attackCommandComponent(int damage, int APcost, int range, int dir):damage(damage), APcost(APcost), range(range), dir(dir){}
+
+    int const action(command* _command, game* _game);
+    int const reverseAction(command* _command, game* _game);
+    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
+    bool const accepted(command* _command, const game* _game, planningState* userState);
+    commandComponent* const replicate(){return new attackCommandComponent(damage, APcost, range, dir);}
 };
 

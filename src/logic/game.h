@@ -1,8 +1,6 @@
 #pragma once
 
 #include "common.h"
-#include "graphic/mainWindow.h"
-#include "control/command.h"
 
 struct controles;
 

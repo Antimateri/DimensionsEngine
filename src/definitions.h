@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_COMPONENTS 10
+#define MAX_COMPONENTS 13
 #define MAX_ENTITIES 10
 
 #define BLOCK_WIDTH 50
@@ -17,11 +17,14 @@
 
 #define INF 1000000000
 
+#define planningState std::unordered_map<int, planningParameter *>
+
 struct game;
 class World;
 class mainWindow;
 class textureManager;
 struct command;
+class effect;
 class innerAnimation;
 class outerAnimation;
 class toRenderInnerAnimation;

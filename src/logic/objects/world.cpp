@@ -9,7 +9,7 @@ bool World::mapRepresentation::getBlock(int dir, int x, int y){
         return 0;
     }
 
-World::World(int nXTiles, int nYTiles): _map(nXTiles, nYTiles, this){
+World::World(int nXTiles, int nYTiles): _map(nXTiles, nYTiles, this), chunks((nXTiles/ChunkSize+1)*(nYTiles/ChunkSize+1),chunkManager()){
     s_componentCounter = 0;
     //No entity
     entities.push_back({0,ComponentMask()});
@@ -21,17 +21,31 @@ World::~World(){
     SDL_DestroyTexture(background);
 }
 
+int World::getChunk(int x, int y){
+    return x/ChunkSize*(_map.nYTiles/ChunkSize+1)+y/ChunkSize;
+}
+
+std::list<int> World::getChunks(int x, int y, int r){
+    std::list<int> chunks;
+    int center=getChunk(x,y);
+    for(int i=-r;i<=r;i++)
+        for(int j=-r;j<=r;j++)
+            if(i*i+j*j<=r*r)
+                chunks.push_back(center+i*(_map.nYTiles/ChunkSize+1)+j);
+    return chunks;
+}
+
 EntityID World::newEntity(){
     if (!freeEntities.empty()){
         EntityIndex newIndex = freeEntities.back();
         freeEntities.pop();
         EntityID newID = CreateEntityId(newIndex, GetEntityVersion(entities[newIndex].id));
         entities[newIndex].id = newID;
-        this->Assign<ExistsComponent>(newIndex);
+        //this->Assign<ExistsComponent>(newIndex);
         return entities[newIndex].id;
     }
     entities.push_back({ CreateEntityId(EntityIndex(entities.size()), 0), ComponentMask() });
-    this->Assign<ExistsComponent>(entities.back().id);
+    //this->Assign<ExistsComponent>(entities.back().id);
     return entities.back().id;
 }
 

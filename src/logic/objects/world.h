@@ -2,9 +2,20 @@
 
 #include "common.h"
 #include "entity.h"
+#include "logic/objects/entityDefinition.h"
+
+#define ChunkSize 32
+
+struct WorldBlueprints{
+    std::vector<entityDefinition> _entityDefinitions;
+    std::vector<effect*> _effects;
+    std::vector<command*> _actions;
+};
 
 class World{
 private:  
+
+    WorldBlueprints _blueprints;
 
     int s_componentCounter;
 
@@ -30,9 +41,6 @@ public:
         size_t elementSize{ 0 };
         std::unordered_set<EntityIndex> occupied;
     };
-    
-    std::vector<EntityDesc> entities;
-    std::vector<ComponentPool*> componentPools;
 
     struct mapRepresentation{
 
@@ -73,6 +81,13 @@ public:
 
     };
 
+    typedef std::list<EntityID> chunkManager;
+
+    std::vector<chunkManager> chunks;
+    
+    std::vector<EntityDesc> entities;
+    std::vector<ComponentPool*> componentPools;
+
     mapRepresentation _map;
 
     SDL_Texture* background;
@@ -80,6 +95,10 @@ public:
     World(int nXTiles, int nYTiles);
 
     ~World();
+
+    int getChunk(int x, int y);
+
+    std::list<int> getChunks(int x, int y, int r);
 
     template <class T>
     unsigned int GetId();

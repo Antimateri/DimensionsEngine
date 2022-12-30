@@ -1,10 +1,9 @@
 #include "common.h"
-#include "generation/biomeFactory.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
 #include "generation/dungeonFactory.h"
 
-void dungeonFactory::makeNew(int difficulty, int seed, World* world) {
+/*void dungeonFactory::makeNew(int difficulty, int seed, World* world) {
 	Random rnd=new Random(seed);
 	int height=rnd.nextInt(_dungeonMaxSize-_dungeonMinSize+1)+_dungeonMinSize;
 	int width=rnd.nextInt(_dungeonMaxSize-_dungeonMinSize+1)+_dungeonMinSize;
@@ -40,4 +39,4 @@ void dungeonFactory::makeNew(int difficulty, int seed, World* world) {
                         maps.get(2)[x][y]=new Tile(Color.BLUE);
                     else    
                         maps.get(2)[x][y]=new Tile(Color.RED);
-}
+}*/

@@ -5,6 +5,7 @@
 #include "control/commandComponents/commandComponents.h"
 #include "logic/automata/fsm.h"
 #include "logic/engines/behaviour/behaviourEngine.h"
+#include "control/command.h"
 
 int main(){
     game _game;
@@ -25,7 +26,8 @@ int main(){
     library._world->Assign<imageComponent>(ent2)->img=library._textureManager->add();
     library._world->Assign<blockComponent>(ent2)->setBlock(directions::all);
     library._world->Assign<currentActionComponent>(ent2);
-    library._world->Assign<goalAutomataComponent>(ent2)->goals.getCurrentState()->addGoal(goals::move);
+    library._world->Assign<actorComponent>(ent2)->addGoal((new planMove())->setOwner(ent2));
+    library._world->Assign<APComponent>(ent2)->setmax(100)->setVal(100);
 
     r=library._textureManager->edit();
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
@@ -50,21 +52,21 @@ int main(){
     an2->addStep(library._world->Get<imageComponent>(ent)->img, 1.0);
 
     library.aux=new command();
-    library.aux->addActionComponent(new innerAnimationCommandComponent(an));
-    library.aux->addActionComponent(new outerAnimationCommandComponent(an3));
-    library.aux->addActionComponent(new delayCommandComponent(an->getMs()));
-    library.aux->addActionComponent(new setCurrentCommandComponent());
-    library.aux->addActionComponent(new teleportCommandComponent(10));
-    library.aux->addActionComponent(new innerAnimationCommandComponent(an2));
-    library.aux->addActionComponent(new delayCommandComponent(an2->getMs()));
-    library.aux->addActionComponent(new resetCurrentCommandComponent());
+    library.aux->push_back(new innerAnimationCommandComponent(an));
+    library.aux->push_back(new outerAnimationCommandComponent(an3));
+    library.aux->push_back(new delayCommandComponent(an->getMs()));
+    library.aux->push_back(new setCurrentCommandComponent());
+    library.aux->push_back(new teleportCommandComponent(10));
+    library.aux->push_back(new innerAnimationCommandComponent(an2));
+    library.aux->push_back(new delayCommandComponent(an2->getMs()));
+    library.aux->push_back(new resetCurrentCommandComponent());
 
     command* rando= new command();
-    rando->addActionComponent(new setCurrentCommandComponent());
-    rando->addActionComponent(new delayCommandComponent(1000));
-    rando->addActionComponent(new randomMoveCommandComponent(10));
-    rando->addActionComponent(new resetCurrentCommandComponent());
-    library._world->Assign<posibleActionsComponent>(ent2)->posibilities.push_back(rando);
+    rando->push_back(new setCurrentCommandComponent());
+    rando->push_back(new delayCommandComponent(1000));
+    rando->push_back(new randomMoveCommandComponent(10));
+    rando->push_back(new resetCurrentCommandComponent());
+    library._world->Assign<posibleActionsComponent>(ent2)->posibilities.push_back(rando->setSource(ent2));
 
     library._game->initGame();
     library._game->gameLoop();

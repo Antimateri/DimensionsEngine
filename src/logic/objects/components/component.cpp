@@ -52,6 +52,10 @@ positionComponent::moveError positionComponent::moveTo(int tileX, int tileY, Wor
     }
     if(_world->_map.isValid(this->tileX, this->tileY))
         _world->_map.map[this->tileX][this->tileY].erase(pos);
+    if(this->tileX!=-1 && this->tileY!=-1 && world->getChunk(this->tileX, this->tileY)!=world->getChunk(tileX, tileY))
+        world->chunks[world->getChunk(this->tileX, this->tileY)].remove(id);
+    if(world->getChunk(tileX, tileY)!=world->getChunk(this->tileX, this->tileY))
+        world->chunks[world->getChunk(tileX, tileY)].push_back(id);
     this->tileX=tileX;
     this->tileY=tileY;
     pos=world->_map.map[tileX][tileY].insert(world->_map.map[tileX][tileY].end(),id);

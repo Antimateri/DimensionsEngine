@@ -17,15 +17,6 @@ int const setCurrentCommandComponent::reverseAction(command* _command, game* _ga
     return 0;
 }
 
-bool const setCurrentCommandComponent::accepted(command* _command, const game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)==nullptr || \
-            library._world->Get<currentActionComponent>(_command->source)->current==nullptr || \
-            library._world->Get<currentActionComponent>(_command->source)->current->stopable ){
-        return 1;
-    }
-    return 0;
-}
-
 void setCurrentCommandComponent::abort(command* _command, const game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
         library._world->Get<currentActionComponent>(_command->source)->current=nullptr;
@@ -42,20 +33,12 @@ int const resetCurrentCommandComponent::action(command* _command, game* _game){
     return 0;
 }
 
-bool const resetCurrentCommandComponent::accepted(command* _command, const game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)==nullptr || \
-        library._world->Get<currentActionComponent>(_command->source)->current==_command){
-        return 1;
-    }
-    return 0;
-}
-
 void resetCurrentCommandComponent::abort(command* _command, const game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
         library._world->Get<currentActionComponent>(_command->source)->current=_command;
 }
 
-int const nextGoalStateCommandComponent::action(command* _command, game* _game){
+/*int const nextGoalStateCommandComponent::action(command* _command, game* _game){
     if(source_target){
         if(library._world->_map.isValidEntity(_command->targetX, _command->targetY) \
             && library._world->_map.Get<goalAutomataComponent>(_command->targetX, _command->targetY)!=nullptr){
@@ -85,4 +68,4 @@ int const nextGoalStateCommandComponent::reverseAction(command* _command, game* 
             library._world->_map.Get<goalAutomataComponent>(_command->sourceX, _command->sourceY)->goals.setCurrentState(prev);
         }
     return 0;
-}
+}*/

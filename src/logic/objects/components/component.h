@@ -4,6 +4,8 @@
 #include "logic/objects/world.h"
 #include "graphic/textureManager.h"
 #include "logic/automata/fsm.h"
+#include "logic/objects/effects/effect.h"
+#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
 namespace directions{
         const int center=1;
@@ -18,8 +20,6 @@ namespace directions{
 
     int getOpposite(int dir);
 }
-
-class ExistsComponent{};
 
 class combatComponent{
 public:
@@ -91,13 +91,89 @@ public:
     std::list<command*> posibilities;
 };
 
-class goalAutomataComponent{
+/*class goalAutomataComponent{
 public:
 
     FSM<goalState> goals;
 
     goalAutomataComponent(){}
 
+};*/
+
+class actorComponent{
+private:
+    std::map<int, planningParameter*> goals;
+    std::unordered_map<int, planningParameter*> parameters;
+    std::deque<command*> plan;
+
+    bool updatePlan=1;
+    int prevGoal;
+
+public:
+
+    bool planReady(){
+        return !updatePlan;
+    }
+
+    void addParameter(planningParameter* param){
+        parameters[param->getID()]=param;
+        updatePlan=1;
+    }
+
+    actorComponent* addGoal(planningParameter* goal){
+        goals[goal->getID()]=goal;
+        updatePlan=1;
+        return this;
+    }
+
+    planningParameter* getGoal(){
+        planningParameter* out=nullptr;
+        for(auto& i : goals){
+            if(i.second->isSatisfied(&parameters)){
+                out=i.second;
+                if(prevGoal!=i.first){
+                    updatePlan=1;
+                    prevGoal=i.first;
+                }
+                break;
+            }
+        }
+        return out;
+    }
+
+    void setPlan(std::deque<command*>& _plan){
+        if(!_plan.empty()){
+            plan=_plan;
+            updatePlan=0;
+        }
+    }
+
+    command* getNextAction(){
+        command* out=nullptr;
+        if(planReady()){
+            out=plan.front();
+            plan.pop_front();
+            if(plan.empty()){
+                updatePlan=1;
+            }
+        }
+        return out;
+    }
+};
+
+class plancomponent{
+public:
+    std::list<command*> plan;
+};
+
+class effectComponent{
+public:
+    std::list<effect*> effects;
+};
+
+class entityStateComponent{
+public:
+    planningState* state;
 };
 
 class valueComponent{
@@ -107,11 +183,11 @@ private:
 
 public:
 
-    virtual void setmax(int maxi){maxVal=maxi;val=maxi;}
+    virtual valueComponent* setmax(int maxi){maxVal=maxi;val=maxi;return this;}
     virtual const int getVal(){return val;};
-    virtual void setVal(int val){this->val=std::max(std::min(val,maxVal),0);}
-    virtual void addVal(int val){setVal(this->val+val);}
-    virtual void subVal(int val){setVal(this->val-val);}
+    virtual valueComponent* setVal(int val){this->val=std::max(std::min(val,maxVal),0);return this;}
+    virtual valueComponent* addVal(int val){return setVal(this->val+val);}
+    virtual valueComponent* subVal(int val){return setVal(this->val-val);}
     virtual const int getMaxVal(){return maxVal;}
 };
 

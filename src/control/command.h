@@ -2,6 +2,8 @@
 
 #include "common.h"
 #include "logic/game.h"
+#include "logic/objects/entity.h"
+#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
 struct command{
 private:
@@ -10,7 +12,10 @@ private:
     std::list<commandComponent*>::iterator currentState;
     std::list<commandComponent*> _components;
     int totalTime=0;
+    int totalCost=0;
     unsigned int effect=0;
+
+    void endAction(game* _game);
 
 public:
     EntityID source;
@@ -27,27 +32,29 @@ public:
 
     EntityIndex getSource(){return source;}
 
+    command* setSource(EntityIndex _source);
+
     int action(game* _game);
     
     int reverseAction(game* _game);
     
     command* replicate();
     
-    bool Accepted(game* _game);
+    bool hasEffect(planningParameter *desiredEffect);
 
-    bool ReverseAccepted(game* _game);
+    std::unordered_map<int, planningParameter *>* getPreconditions(planningParameter *desiredEffect);
 
-    command* addActionComponent(commandComponent* _component);
+    command* push_back(commandComponent* _component);
 
-    command* addInfoComponent(commandComponent* _component);
+    command* push_front(commandComponent* _component);
 
-    void removeInfoComponent();
+    void pop_front();
 
     ~command();
 
     bool abort(game* _game);
-
-    unsigned int const getEffect();
     
     unsigned int const getTime();
+
+    unsigned int const getCost();
 };

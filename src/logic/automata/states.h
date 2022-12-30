@@ -27,7 +27,7 @@ public:
 
 };
 
-class goalState: public state{
+/*class goalState: public state{
 private:
 
     std::unordered_map<int, command*> change;
@@ -52,4 +52,4 @@ public:
         conections[input]=state;
     }
 
-};
+};*/
