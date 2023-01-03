@@ -47,13 +47,12 @@ command* command::replicate(){
     auto it2=_components.begin();
     for(;it2!=_components.end();it2++)
         out->push_back((*it2)->replicate());
+    out->setSource(source);
     return out;
 }
 
 command* command::setSource(EntityIndex _source){
     source=_source;
-    sourceX=library._world->Get<positionComponent>(source)->tileX;
-    sourceY=library._world->Get<positionComponent>(source)->tileY;
     return this;
 }
 
@@ -78,7 +77,8 @@ void command::pop_front(){
 bool command::abort(game* _game){
     if(stopable){
         while(it!=_components.begin()){
-            (*it)->abort(this, _game);
+            if(it!=_components.end())
+                (*it)->abort(this, _game);
             it--;
         }
         (*it)->abort(this, _game);
@@ -96,38 +96,80 @@ unsigned int const command::getCost(){
     return totalCost;
 }
 
-bool command::hasEffect(planningParameter *desiredEffect){
+bool command::hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status){
     auto it2=_components.end();
     it2--;
     for(;it2!=_components.begin();it2--)
-        if((*it2)->hasEffect(this, desiredEffect))return true;
+        if((*it2)->hasEffect(this, goals, status))return true;
     return false;
 }
 
-std::unordered_map<int, planningParameter *>* command::getPreconditions(planningParameter *desiredEffect){
-    std::unordered_map<int, planningParameter *>* out=new std::unordered_map<int, planningParameter *>();
-    (*out)[desiredEffect->getID()] = desiredEffect;
+bool command::canExecute(std::unordered_map<int, planningParameter *>* status){
+    auto [pre,post]=getPrePost(status);
+    for(auto [id,val] : *pre){
+        if(val->isSatisfied(status)==false){
+            delete pre;
+            delete post;
+            return false;
+        }
+    }
+    delete pre;
+    delete post;
+    return true;
+}
+
+std::pair<planningState*,planningState*> command::getPrePost(std::unordered_map<int, planningParameter *>* status){
+    std::unordered_map<int, planningParameter *>* pre=new std::unordered_map<int, planningParameter *>();
+    std::unordered_map<int, planningParameter *>* post=new std::unordered_map<int, planningParameter *>();
     auto it2=_components.end();
     it2--;
     for(;it2!=_components.begin();it2--){
-        std::unordered_map<int, planningParameter *>* aux=new std::unordered_map<int, planningParameter *>();
-        for(auto [id,val]: *out){
-            if((*it2)->hasEffect(this, val)){
-                for(auto [id2,val2]: (*it2)->getPreconditions(this, val)){
-                    if(aux->count(id2)==0){
-                        (*aux)[id2]=val2;
-                    }
-                    else{
-                        (*aux)[id2]=max((*aux)[id2],val2);
-                    }
+        for(auto [id,val] : (*(*it2)->getPreconditions(this, status))){
+            if(pre->count(id)==0)
+                (*pre)[id]=val;
+            else
+                (*pre)[id]->add(val);
+        }
+        for(auto [id,val] : (*(*it2)->getEffects(this, status))){
+            if(post->count(id)==0)
+                (*post)[id]=val;
+            else
+                (*post)[id]->add(val);
+        }
+    }
+    std::queue<int> toDelete;
+    for(auto [id,val] : *pre){
+        if(post->count(id)){
+            if(val->satisfies((*post)[id])){
+                planningParameter* aux=val->substract((*post)[id]);
+                if(aux!=nullptr){
+                    delete val;
+                    val=aux;
                 }
+                else{
+                    delete val;
+                    toDelete.push(id);
+                }
+                delete (*post)[id];
+                post->erase(id);
             }
-            else{
-                (*aux)[id]=val;
+            else if((*post)[id]->satisfies(val)){
+                planningParameter* aux=(*post)[id]->substract(val);
+                if(aux!=nullptr){
+                    delete (*post)[id];
+                    (*post)[id]=aux;
+                }
+                else{
+                    delete (*post)[id];
+                    post->erase(id);
+                }
+                delete val;
             }
         }
-        delete out;
-        out=aux;
     }
-    return out;
+    while(!toDelete.empty()){
+        pre->erase(toDelete.front());
+        toDelete.pop();
+    }
+    return std::make_pair(pre,post);
 }

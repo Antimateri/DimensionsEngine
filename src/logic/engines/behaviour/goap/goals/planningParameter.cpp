@@ -1,13 +1,6 @@
 #include "planningParameter.h"
 #include "logic/objects/components/component.h"
 
-planningParameter *max(planningParameter *a, planningParameter *b){
-    if(a->satisfies(b)){
-        return a;
-    }
-    return b;
-}
-
 namespace std
 {
     template <>
@@ -29,10 +22,14 @@ bool planHasAP::satisfies(planningParameter *parameter){
 
 //TODO si no lo encuentras en la situacion lo añades, no deberiamos estar mirando la situacion sino la proyeccion
 bool planHasAP::isSatisfied(std::unordered_map<int, planningParameter*>* situation){
-    if(situation != nullptr && situation->count(getID()) && (*(*situation)[getID()]->getInfo())>=_ap){
-        return true;
+    int sum = 0;
+    if(situation != nullptr && situation->count(getID())){
+        sum+=(*(*situation)[getID()]->getInfo());
     }
-    else if(library._world->Get<APComponent>(_owner)==nullptr || library._world->Get<APComponent>(_owner)->getVal()>=_ap){
+    else if(library._world->Get<APComponent>(_owner)!=nullptr){
+        sum+=library._world->Get<APComponent>(_owner)->getVal();
+    }
+    if(sum>=_ap){
         return true;
     }
     return false;
@@ -40,3 +37,7 @@ bool planHasAP::isSatisfied(std::unordered_map<int, planningParameter*>* situati
 
 planningParameter* planHasAP::setInfo(char* data){_ap=*data;return this;}
 char* planHasAP::getInfo(){return (char*)(&_ap);}
+
+ bool isNotOccupiedPlan::isSatisfied(std::unordered_map<int, planningParameter*>* situation){
+    return library._world->Get<currentActionComponent>(getOwner())->current == nullptr;
+}

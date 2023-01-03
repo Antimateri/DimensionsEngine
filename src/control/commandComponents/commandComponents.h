@@ -9,8 +9,9 @@ class commandComponent{
 public:
     virtual int const action(command* _command, game* _game){return 0;}
     virtual int const reverseAction(command* _command, game* _game){return 0;}
-    virtual bool hasEffect(command* _command, planningParameter *desiredEffect){return false;}
-    virtual std::unordered_map<int, planningParameter *>& getPreconditions(command* _command, planningParameter *desiredEffect){return *(new std::unordered_map<int, planningParameter *>());}
+    virtual bool hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status){return false;}
+    virtual std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status){return (new std::unordered_map<int, planningParameter *>());}
+    virtual std::unordered_map<int, planningParameter *>* getEffects(command* _command, std::unordered_map<int, planningParameter *>* status){return (new std::unordered_map<int, planningParameter *>());}
     virtual commandComponent* const replicate(){return new commandComponent();}
     virtual void abort(command* _command, const game* _game){}
     virtual int const getTime(){return 0;}
@@ -22,7 +23,7 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState);
+    std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status);
     commandComponent* const replicate(){return new setCurrentCommandComponent();}
     void abort(command* _command, const game* _game);
 };
@@ -158,10 +159,26 @@ public:
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState);
-    bool hasEffect(command* _command, planningParameter *desiredEffect);
-    std::unordered_map<int, planningParameter *>& getPreconditions(command* _command, planningParameter *desiredEffect);
+    bool hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status);
+    std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status);
+    std::unordered_map<int, planningParameter *>* getEffects(command* _command, std::unordered_map<int, planningParameter *>* status);
     commandComponent* const replicate(){return new randomMoveCommandComponent(APCost);}
+};
+
+class recoverAPCommandComponent: public commandComponent{
+private:
+
+    int APRecovered;
+public:
+    
+        recoverAPCommandComponent(int APRecovered):APRecovered(APRecovered){}
+    
+        int const action(command* _command, game* _game);
+        int const reverseAction(command* _command, game* _game);
+        bool hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status);
+        std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status);
+        std::unordered_map<int, planningParameter *>* getEffects(command* _command, std::unordered_map<int, planningParameter *>* status);
+        commandComponent* const replicate(){return new recoverAPCommandComponent(APRecovered);}
 };
 
 class attackCommandComponent: public commandComponent{

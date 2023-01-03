@@ -20,8 +20,6 @@ private:
 public:
     EntityID source;
 
-    int sourceX, sourceY;
-
     int targetX, targetY;
 
     bool stopable;
@@ -40,9 +38,11 @@ public:
     
     command* replicate();
     
-    bool hasEffect(planningParameter *desiredEffect);
+    bool hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status);
 
-    std::unordered_map<int, planningParameter *>* getPreconditions(planningParameter *desiredEffect);
+    bool canExecute(std::unordered_map<int, planningParameter *>* status);
+
+    std::pair<planningState*,planningState*> getPrePost(std::unordered_map<int, planningParameter *>* status);
 
     command* push_back(commandComponent* _component);
 

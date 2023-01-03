@@ -6,6 +6,7 @@
 #include "logic/automata/fsm.h"
 #include "logic/objects/effects/effect.h"
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
+#include "control/command.h"
 
 namespace directions{
         const int center=1;
@@ -111,17 +112,31 @@ private:
 
 public:
 
-    bool planReady(){
-        return !updatePlan;
-    }
-
-    void addParameter(planningParameter* param){
-        parameters[param->getID()]=param;
+    void clearPlan(){
+        plan.clear();
         updatePlan=1;
     }
 
+    bool planValid(){
+        return !updatePlan;
+    }
+
+    bool planReady(std::unordered_map<int, planningParameter *>* status){
+        return planValid() && !plan.empty() && plan.front()->canExecute(status);
+    }
+
+    actorComponent* addParameter(planningParameter* param){
+        parameters[param->getID()]=param;
+        updatePlan=1;
+        return this;
+    }
+
+    std::unordered_map<int, planningParameter*> getParameters(){
+        return parameters;
+    }
+
     actorComponent* addGoal(planningParameter* goal){
-        goals[goal->getID()]=goal;
+        goals[goal->getPriority()]=goal;
         updatePlan=1;
         return this;
     }
@@ -129,7 +144,7 @@ public:
     planningParameter* getGoal(){
         planningParameter* out=nullptr;
         for(auto& i : goals){
-            if(i.second->isSatisfied(&parameters)){
+            if(i.second->aplicable(&parameters)){
                 out=i.second;
                 if(prevGoal!=i.first){
                     updatePlan=1;
@@ -148,9 +163,9 @@ public:
         }
     }
 
-    command* getNextAction(){
+    command* getNextAction(std::unordered_map<int, planningParameter *>* status){
         command* out=nullptr;
-        if(planReady()){
+        if(planReady(status)){
             out=plan.front();
             plan.pop_front();
             if(plan.empty()){

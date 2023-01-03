@@ -33,8 +33,26 @@ public:
         return !((*this)<=parameter);
     }
 
+    virtual planningParameter* replicate(){return (new planningParameter())->setOwner(getOwner());}
+
     virtual void activate(){}
     virtual void deactivate(){}
+
+    virtual planningParameter* add(planningParameter *parameter){
+        if(parameter->getID()==getID()){
+            return this;
+        }
+        return nullptr;
+    }
+
+    virtual planningParameter* substract(planningParameter *parameter){
+        if(parameter->getID()==getID()){
+            return nullptr;
+        }
+        return this;
+    }
+
+    virtual bool aplicable(std::unordered_map<int, planningParameter*>* situation){return true;}
 
     virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation){return false;}
     virtual bool satisfyPreconditions(){return false;}
@@ -74,8 +92,6 @@ public:
 
 };
 
-planningParameter *max(planningParameter *a, planningParameter *b);
-
 class planMove: public planningParameter{
 public:
     planMove() : planningParameter(100,100) {}
@@ -85,8 +101,10 @@ public:
     }
 
     virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation){
-        return true;
+        return situation != nullptr && (*situation).count(getID());
     }
+
+    virtual planningParameter* replicate(){return (new planMove())->setOwner(getOwner());}
 
 };
 
@@ -100,7 +118,41 @@ public:
 
     virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation);
 
+    virtual planningParameter* add(planningParameter *parameter){
+        if(parameter->getID()==getID()){
+            this->_ap+=*(parameter->getInfo());
+            return this;
+        }
+        return nullptr;
+    }
+
+    virtual planningParameter* substract(planningParameter *parameter){
+        if(parameter->getID()==getID()){
+            if(_ap-*(parameter->getInfo())<=0){
+                return nullptr;
+            }
+            this->_ap-=*(parameter->getInfo());
+            return this;
+        }
+        return this;
+    }
+
+    virtual planningParameter* replicate(){return (new planHasAP(_ap))->setOwner(getOwner());}
+
     virtual planningParameter* setInfo(char* data);
     virtual char* getInfo();
 
+};
+
+class isNotOccupiedPlan: public planningParameter{
+    public:
+        isNotOccupiedPlan() : planningParameter(102,102) {}
+
+        virtual bool satisfies(planningParameter *parameter){
+            return true;
+        }
+
+        virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation);
+
+        virtual planningParameter* replicate(){return (new isNotOccupiedPlan())->setOwner(getOwner());}
 };

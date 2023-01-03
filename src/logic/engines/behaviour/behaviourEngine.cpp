@@ -7,27 +7,23 @@
 #include "control/commandComponents/commandComponents.h"
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
-std::unordered_map<int, planningParameter*>* updateGoals(std::unordered_map<int, planningParameter*>* out, std::unordered_map<int, planningParameter*>* newGoals){
-    for(auto [id,val]: (*newGoals)){
-        //TODO meter informacion del tipo
-        if(val->isSatisfied(nullptr))
-            continue;
-        if(out->count(id)==0){
-            (*out)[id]=val;
-        }
-        else{
-            (*out)[id]=max((*out)[id],val);
-        }
-    }
-    return out;
-}
-
-bool planner(EntityID id, World* _world, std::unordered_map<int, planningParameter *>* goals, std::deque<command*>& bestP, int& best, int cost){
+bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningParameter *>* state, std::unordered_map<int, planningParameter *>* goals, std::deque<command*>& bestP, int& best, int cost, short nrec=0){
     bool out=0;
+    nrec++;
+    if(nrec>6){
+        return 0;
+    }
     if(cost>=best){
         return 0;
     }
-    if(goals->empty()){
+    bool ending = 1;
+    for(auto [id, val]: (*goals)){
+        if(!val->isSatisfied(state)){
+            ending=false;
+            break;
+        }
+    }
+    if(ending){
         if(cost<best){
             best=cost;
             bestP.clear();
@@ -35,20 +31,57 @@ bool planner(EntityID id, World* _world, std::unordered_map<int, planningParamet
         }
         return 0;
     }
-    for(command* i : _world->Get<posibleActionsComponent>(id)->posibilities){
+    for(command* i : _world->Get<posibleActionsComponent>(entityId)->posibilities){
         std::unordered_map<int, planningParameter *>* newGoals=nullptr;
-        for(auto [id2,goal] : (*goals)){
-            if(i->hasEffect(goal)){
+        std::unordered_map<int, planningParameter *>* newState = nullptr;
+        if(i->hasEffect(goals, state)){
+            auto [pre,post] = i->getPrePost(state);
+            for(auto [id,val]: (*pre)){
                 if(newGoals==nullptr){
-                    newGoals=new std::unordered_map<int, planningParameter*>(*goals);
+                    newGoals=new std::unordered_map<int, planningParameter*>();
+                    for(auto [id2,val2]: (*goals)){
+                        newGoals->insert({id2,val2->replicate()});
+                    }
                 }
-                newGoals=updateGoals(newGoals,i->getPreconditions(goal));
-                newGoals->erase(id2);
+                if(newGoals->count(id)==0){
+                    if(val!=nullptr)
+                        (*newGoals)[id]=val->setOwner(entityId);
+                }
+                else{
+                    if((*newGoals)[id]->add(val)==nullptr){
+                        delete (*newGoals)[id];
+                        newGoals->erase(id);
+                    }
+                }
             }
-        }
-        if( newGoals!= nullptr && planner(id, _world, newGoals, bestP, best, cost+i->getCost())){
-            out=1;
-            bestP.push_back(i);
+            for(auto [id,val]: (*post)){
+                if(newState==nullptr){
+                    newState=new std::unordered_map<int, planningParameter*>();
+                    for(auto [id2,val2]: (*state)){
+                        newState->insert({id2,val2->replicate()});
+                    }
+                }
+                if(newState->count(id)==0){
+                    if(val!=nullptr)
+                        (*newState)[id]=val->setOwner(entityId);
+                }
+                else{
+                    if((*newState)[id]->add(val)==nullptr){
+                        delete (*newState)[id];
+                        newState->erase(id);
+                    }
+                }
+            }
+            if(newState==nullptr){
+                newState=state;
+            }
+            if(newGoals==nullptr){
+                newGoals=goals;
+            }
+            if(planner(entityId, _world, newState, newGoals, bestP, best, cost+i->getCost(), nrec)){
+                bestP.push_back(i);
+                out=1;
+            }
         }
     }
     return out;
@@ -60,17 +93,20 @@ void behaviourEngine(World* _world){
         if(goal==nullptr){
             continue;
         }
-        if(!_world->Get<actorComponent>(id)->planReady()){
+        std::unordered_map<int, planningParameter *> status=_world->Get<actorComponent>(id)->getParameters();
+        //TODO ready?
+        if(!_world->Get<actorComponent>(id)->planValid() && _world->Get<currentActionComponent>(id)->current==nullptr){
             int best=5000;
             std::unordered_map<int, planningParameter *> goals;
+            //TODO metelo en la funcion
             goals[goal->getID()]=goal;
             std::deque<command*> bestP;
-            if(planner(id, _world, &goals, bestP, best, 0)){
+            if(planner(id, _world, &status, &goals, bestP, best, 0)){
                 _world->Get<actorComponent>(id)->setPlan(bestP);
             }
         }
-        if(_world->Get<actorComponent>(id)->planReady()){
-            library._game->addCommand(_world->Get<actorComponent>(id)->getNextAction()->replicate()->setSource(id));
+        if(_world->Get<actorComponent>(id)->planReady(&status)){
+            library._game->addCommand(_world->Get<actorComponent>(id)->getNextAction(&status)->replicate()->setSource(id));
         }
     }
 }

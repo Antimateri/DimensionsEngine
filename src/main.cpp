@@ -63,10 +63,25 @@ int main(){
 
     command* rando= new command();
     rando->push_back(new setCurrentCommandComponent());
-    rando->push_back(new delayCommandComponent(1000));
+    rando->push_back(new delayCommandComponent(100));
     rando->push_back(new randomMoveCommandComponent(10));
     rando->push_back(new resetCurrentCommandComponent());
+    rando->stopable=false;
     library._world->Assign<posibleActionsComponent>(ent2)->posibilities.push_back(rando->setSource(ent2));
+
+    innerAnimation* an4=new innerAnimation();
+    an4->addStep(library._world->Get<imageComponent>(ent2)->img, 100.0);
+    an4->addStep(au, 500.0);
+    an4->addStep(library._world->Get<imageComponent>(ent2)->img, 100.0);
+
+    command* recover= new command();
+    recover->push_back(new setCurrentCommandComponent());
+    recover->push_back(new innerAnimationCommandComponent(an4));
+    recover->push_back(new delayCommandComponent(an4->getMs()));
+    recover->push_back(new recoverAPCommandComponent(15));
+    recover->push_back(new resetCurrentCommandComponent());
+    recover->stopable=false;
+    library._world->Get<posibleActionsComponent>(ent2)->posibilities.push_back(recover->setSource(ent2));
 
     library._game->initGame();
     library._game->gameLoop();

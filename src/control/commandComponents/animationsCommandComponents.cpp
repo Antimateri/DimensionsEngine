@@ -24,7 +24,7 @@ int const innerAnimationCommandComponent::reverseAction(command* _command, game*
 
 int const outerAnimationCommandComponent::action(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;
-    an->setCenter(_command->sourceX, _command->sourceY);
+    an->setCenter(library._world->Get<positionComponent>(_command->source)->tileX, library._world->Get<positionComponent>(_command->source)->tileY);
     an->setSpeed(1);
     an->begin();
     library._outerAnimationManager->addOuterAnimation(an);
@@ -33,7 +33,7 @@ int const outerAnimationCommandComponent::action(command* _command, game* _game)
 
 int const outerAnimationCommandComponent::reverseAction(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;
-    an->setCenter(_command->sourceX, _command->sourceY);
+    an->setCenter(library._world->Get<positionComponent>(_command->source)->tileX, library._world->Get<positionComponent>(_command->source)->tileY);
     an->setSpeed(-1);
     an->begin();
     library._outerAnimationManager->addOuterAnimation(an);
