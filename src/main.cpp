@@ -15,25 +15,25 @@ int main(){
     library._world->Assign<currentActionComponent>(ent);
     library._world->Assign<imageComponent>(ent)->img=library._textureManager->add();
 
-    SDL_Renderer* r=library._textureManager->edit();
+    SDL_Renderer* r=library._textureManager->edit(&library._world->Get<imageComponent>(ent)->img);
     SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
     SDL_RenderFillRect(r,&library._world->Get<imageComponent>(ent)->img.getRect());
 
     library._player=ent;
 
     EntityID ent2=library._world->newEntity();
-    library._world->Assign<positionComponent>(ent2)->moveTo(1,2,library._world,ent2);
+    library._world->Assign<positionComponent>(ent2)->moveTo(9,9,library._world,ent2);
     library._world->Assign<imageComponent>(ent2)->img=library._textureManager->add();
     library._world->Assign<blockComponent>(ent2)->setBlock(directions::all);
     library._world->Assign<currentActionComponent>(ent2);
     library._world->Assign<actorComponent>(ent2)->addGoal((new planMove())->setOwner(ent2));
     library._world->Assign<APComponent>(ent2)->setmax(100)->setVal(100);
 
-    r=library._textureManager->edit();
+    r=library._textureManager->edit(&library._world->Get<imageComponent>(ent2)->img);
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
     SDL_RenderFillRect(r,&library._world->Get<imageComponent>(ent2)->img.getRect());
     textureManager::imgDir au=library._textureManager->add();
-    r=library._textureManager->edit();
+    r=library._textureManager->edit(&au);
     SDL_SetRenderDrawColor(r, 0, 255, 255, 255);
     SDL_RenderFillRect(r,&au.getRect());
 
@@ -78,7 +78,7 @@ int main(){
     recover->push_back(new setCurrentCommandComponent());
     recover->push_back(new innerAnimationCommandComponent(an4));
     recover->push_back(new delayCommandComponent(an4->getMs()));
-    recover->push_back(new recoverAPCommandComponent(15));
+    recover->push_back(new recoverAPCommandComponent(105));
     recover->push_back(new resetCurrentCommandComponent());
     recover->stopable=false;
     library._world->Get<posibleActionsComponent>(ent2)->posibilities.push_back(recover->setSource(ent2));

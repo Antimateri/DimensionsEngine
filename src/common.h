@@ -9,5 +9,7 @@
 
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 
+typedef std::mt19937 randomVar;
+
 typedef unsigned int EntityIndex;
 typedef unsigned int EntityVersion;

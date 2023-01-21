@@ -42,14 +42,6 @@ mainWindow::mainWindow(){
 
 	library._textureManager = new textureManager(renderer);//SDL_CreateRenderer(window, -1, rendererFlags));
 
-	SDL_SetRenderTarget(renderer,NULL);
-	SDL_SetRenderDrawColor(renderer,255,255,255,255);
-	library._world->background=SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, library._world->_map.nXTiles*BLOCK_WIDTH, library._world->_map.nYTiles*BLOCK_HEIGHT);
-	std::cout<<SDL_GetError();
-	SDL_SetRenderTarget(renderer,library._world->background);
-	
-	SDL_RenderClear(renderer);
-
 	//SDL_SetRenderTarget(renderer,NULL);
 	
 

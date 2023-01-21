@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAX_COMPONENTS 13
-#define MAX_ENTITIES 10
+#define MAX_ENTITIES 100000
 
 #define BLOCK_WIDTH 50
 #define BLOCK_HEIGHT 50
@@ -10,6 +10,7 @@
 #define MAP_HEIGHT 100
 
 #define TEXTURE_BLOCK_SIDE 100
+#define NUMBER_TEXTURE_BLOCKS 100
 
 #define NUMBER_COMMANDS_REMEMBERED 10
 

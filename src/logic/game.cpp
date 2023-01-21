@@ -5,6 +5,9 @@
 #include "logic/engines/behaviour/behaviourEngine.h"
 #include "graphic/mainWindow.h"
 #include "control/command.h"
+#include "generation/dungeonFactory.h"
+#include "generation/caveFactory.h"
+#include "generation/biomeFactory.h"
 
 struct {
     SDL_Event pause;
@@ -32,9 +35,12 @@ void game::changeGameState(gameState state){
 
 game::game(){
     library._game=this;
-    library._world=new World(100, 100);
+    std::vector<biomeFactory*> factories;
+    //factories.push_back(new biomeFactory());
+    factories.push_back(new caveFactory(45,5));
     
     library._mainWindow=new mainWindow();
+    library._world=dungeonFactory(factories).makeNew(1,10); //new World(100, 100);
     library._innerAnimationManager=new toRenderInnerAnimation();
     library._mainWindow->addLayer(library._innerAnimationManager);
     library._mainWindow->addLayer(new toRenderBackground());

@@ -21,15 +21,18 @@ commandComponent* const teleportCommandComponent::replicate(){
 }
 
 int const randomMoveCommandComponent::action(command* _command, game* _game){
-    if(library._world->Get<APComponent>(_command->source)!=nullptr && library._world->Get<APComponent>(_command->source)->getVal()<10){
+    if(library._world->Get<APComponent>(_command->source)!=nullptr && library._world->Get<APComponent>(_command->source)->getVal()<APCost){
         //_command->abort(_game);
         return -1;
     }
     if(library._world->Get<APComponent>(_command->source)!=nullptr)
-        library._world->Get<APComponent>(_command->source)->subVal(10);
+        library._world->Get<APComponent>(_command->source)->subVal(APCost);
+    int tries=0;
     do{
-        dirTaken=1<<rand()%10;
-    }while(library._world->Get<positionComponent>(_command->source)->moveInDirection(dirTaken, library._world, _command->source)!=positionComponent::moveError::succes);
+        dirTaken=1<<rand()%4+1;
+        tries++;
+    }while(library._world->Get<positionComponent>(_command->source)->moveInDirection(dirTaken, library._world, _command->source)!=positionComponent::moveError::succes\
+            && tries<10);
     return 0;
 }
 

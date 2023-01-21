@@ -12,17 +12,20 @@ public:
     public:
         int x;
         int y;
+        int page;
 
         imgDir():x(0), y(0){};
 
         void operator()(imgDir copia){
             this->x=copia.x;
             this->y=copia.y;
+            this->page=copia.page;
         }
 
         void operator=(imgDir copia){
             this->x=copia.x;
             this->y=copia.y;
+            this->page=copia.page;
         }
 
         SDL_Rect& getRect(){
@@ -44,12 +47,12 @@ public:
 
     imgDir add();
 
-    SDL_Renderer* edit();
+    SDL_Renderer* edit(textureManager::imgDir* in);
 
 private:
 
     SDL_Renderer* r;
-    SDL_Texture* images;
+    std::vector<SDL_Texture*> images;
     imgDir siguiente;
 
 };

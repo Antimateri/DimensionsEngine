@@ -1,7 +1,7 @@
 #include "logic/algorithms.h"
 #include "logic/objects/components/component.h"
 
-#define MAX_RADIUS 30
+#define MAX_RADIUS 100
 
 // A Utility Function to calculate the 'h' heuristics.
 double calculateHValue(int x, int y, Pair dest)
