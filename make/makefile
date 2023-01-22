@@ -6,7 +6,7 @@ all: generation.o
 	g++ $(FLAGS) -c ../src/main.cpp -o main.o -I../src $(DEBUG)
 	g++ $(FLAGS) logic.o control.o generation.o graphic.o main.o -o main -I../src -lSDL2 $(DEBUG)
 
-graphic:$(FLAGS)  graphic.o
+graphic: graphic.o
 	g++ $(FLAGS) -c ../src/graphic/main.cpp -o mainGraphic.o -I../src $(DEBUG)
 	g++ $(FLAGS) mainGraphic.o graphic.o logic.o control.o -o mainGraphic -I../src $(DEBUG)
 
