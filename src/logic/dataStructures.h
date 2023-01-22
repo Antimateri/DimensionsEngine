@@ -1,3 +1,4 @@
+//simple data structures and includes necessary for them
 #pragma once
 
 #include <vector>

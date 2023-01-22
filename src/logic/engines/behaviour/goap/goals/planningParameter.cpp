@@ -1,5 +1,6 @@
 #include "planningParameter.h"
 #include "logic/objects/components/component.h"
+#include "logic/objects/world.h"
 
 namespace std
 {

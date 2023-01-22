@@ -6,6 +6,7 @@
 #include "control/command.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
+#include "control/control.h"
 
 bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningParameter *>* state, std::unordered_map<int, planningParameter *>* goals, std::deque<command*>& bestP, int& best, int cost, short nrec=0){
     bool out=0;
@@ -87,7 +88,7 @@ bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningP
     return out;
 }
 
-void behaviourEngine(World* _world){
+void behaviourEngine(World* _world, control* _controller){
     for(EntityID id : worldView<actorComponent>(*_world)){
         planningParameter* goal = _world->Get<actorComponent>(id)->getGoal();
         if(goal==nullptr){
@@ -106,7 +107,7 @@ void behaviourEngine(World* _world){
             }
         }
         if(_world->Get<actorComponent>(id)->planReady(&status)){
-            library._game->addCommand(_world->Get<actorComponent>(id)->getNextAction(&status)->replicate()->setSource(id));
+            static_cast<commandControl*>(_controller)->addCommand(_world->Get<actorComponent>(id)->getNextAction(&status)->replicate()->setSource(id));
         }
     }
 }

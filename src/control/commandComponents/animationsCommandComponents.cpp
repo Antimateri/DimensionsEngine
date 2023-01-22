@@ -3,6 +3,7 @@
 #include "logic/objects/components/component.h"
 #include "graphic/animation/animation.h"
 #include "graphic/toRender/toRender.h"
+#include "logic/objects/world.h"
 
 int const innerAnimationCommandComponent::action(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;

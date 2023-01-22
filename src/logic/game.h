@@ -1,3 +1,4 @@
+//main game class
 #pragma once
 
 #include "common.h"
@@ -7,8 +8,9 @@ struct controles;
 struct game{
 private:
 
-    std::list<std::list<command*>> waiting;
     bool lockInput=false;
+    control* _controlUnit=nullptr;
+    IO* _IOUnit=nullptr;
 
 public:
 
@@ -19,18 +21,24 @@ public:
         Pause
     };
 
-    std::deque<command*> _register;
-
     gameState _gameState;
 
     game();
     ~game();
 
+    bool isLocked(){return lockInput;}
     void changeGameState(gameState state);
-    bool initGame();
-    void gameLoop();
-    void run();
-    void processInput();
-    void addCommand(command* c);
+    bool initGame();                                    //init the game
+    void gameLoop();                                    //main game loop
+    void run();                                         //runs the game in the main loop
+    void processInput();                                //process the input in the main loop
+    
+    void addControlUnit(control* c){                    //adds a control unit to the game
+        _controlUnit=c;
+        library._controller=c;
+    }    
+    void addIOUnit(IO* i){                              //adds an IO unit to the game
+        _IOUnit=i;
+    }
 
 };

@@ -18,7 +18,7 @@ World::World(int nXTiles, int nYTiles): _map(nXTiles, nYTiles, this), chunks((nX
 World::~World(){
     for(ComponentPool* i : componentPools)
         delete i;
-    SDL_DestroyTexture(background);
+    //SDL_DestroyTexture(background);
 }
 
 int World::getChunk(int x, int y){

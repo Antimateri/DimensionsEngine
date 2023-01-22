@@ -1,12 +1,6 @@
 #pragma once
 
 #include "common.h"
-#include "logic/objects/world.h"
-#include "graphic/textureManager.h"
-#include "logic/automata/fsm.h"
-#include "logic/objects/effects/effect.h"
-#include "logic/engines/behaviour/goap/goals/planningParameter.h"
-#include "control/command.h"
 
 namespace directions{
         const int center=1;
@@ -26,11 +20,6 @@ class combatComponent{
 public:
     int combatID;
     int combatPosition;
-};
-
-class imageComponent{
-public:
-    textureManager::imgDir img;
 };
 
 class positionComponent{
@@ -92,15 +81,6 @@ public:
     std::list<command*> posibilities;
 };
 
-/*class goalAutomataComponent{
-public:
-
-    FSM<goalState> goals;
-
-    goalAutomataComponent(){}
-
-};*/
-
 class actorComponent{
 private:
     std::map<int, planningParameter*> goals;
@@ -112,68 +92,23 @@ private:
 
 public:
 
-    void clearPlan(){
-        plan.clear();
-        updatePlan=1;
-    }
+    void clearPlan();
 
-    bool planValid(){
-        return !updatePlan;
-    }
+    bool planValid();
 
-    bool planReady(std::unordered_map<int, planningParameter *>* status){
-        return planValid() && !plan.empty() && plan.front()->canExecute(status);
-    }
+    bool planReady(std::unordered_map<int, planningParameter *>* status);
 
-    actorComponent* addParameter(planningParameter* param){
-        parameters[param->getID()]=param;
-        updatePlan=1;
-        return this;
-    }
+    actorComponent* addParameter(planningParameter* param);
 
-    std::unordered_map<int, planningParameter*> getParameters(){
-        return parameters;
-    }
+    std::unordered_map<int, planningParameter*> getParameters();
 
-    actorComponent* addGoal(planningParameter* goal){
-        goals[goal->getPriority()]=goal;
-        updatePlan=1;
-        return this;
-    }
+    actorComponent* addGoal(planningParameter* goal);
 
-    planningParameter* getGoal(){
-        planningParameter* out=nullptr;
-        for(auto& i : goals){
-            if(i.second->aplicable(&parameters)){
-                out=i.second;
-                if(prevGoal!=i.first){
-                    updatePlan=1;
-                    prevGoal=i.first;
-                }
-                break;
-            }
-        }
-        return out;
-    }
+    planningParameter* getGoal();
 
-    void setPlan(std::deque<command*>& _plan){
-        if(!_plan.empty()){
-            plan=_plan;
-            updatePlan=0;
-        }
-    }
+    void setPlan(std::deque<command*>& _plan);
 
-    command* getNextAction(std::unordered_map<int, planningParameter *>* status){
-        command* out=nullptr;
-        if(planReady(status)){
-            out=plan.front();
-            plan.pop_front();
-            if(plan.empty()){
-                updatePlan=1;
-            }
-        }
-        return out;
-    }
+    command* getNextAction(std::unordered_map<int, planningParameter *>* status);
 };
 
 class plancomponent{

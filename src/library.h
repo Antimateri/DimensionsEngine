@@ -1,4 +1,6 @@
+//includes the global variable library, in the future this may be eliminated for a more object oriented approach
 #pragma once
+
 #include "definitions.h"
 
 struct libra{
@@ -10,7 +12,7 @@ struct libra{
     EntityID _player;
     toRenderInnerAnimation* _innerAnimationManager;
     toRenderOuterAnimation* _outerAnimationManager;
-
+    control* _controller;
     //quitar
     command* aux; 
 

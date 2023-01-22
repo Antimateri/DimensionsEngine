@@ -1,6 +1,7 @@
 #include "graphic/animation/animation.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
+#include "logic/objects/components/graphicComponent.h"
 
 void innerAnimation::begin(){
     loop=ntimes-1;

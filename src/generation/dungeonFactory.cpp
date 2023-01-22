@@ -2,6 +2,7 @@
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
 #include "generation/dungeonFactory.h"
+#include "graphic/textureManager.h"
 
 World* dungeonFactory::makeNew(int difficulty, int seed) {
     randomVar gen(seed); 

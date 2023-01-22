@@ -5,6 +5,8 @@
 #include "control/command.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/algorithms.h"
+#include "logic/objects/components/graphicComponent.h"
+#include "control/control.h"
 
 void toRenderEntities::draw(SDL_Renderer* r){
     for(int y=0; y < library._mainWindow->BLOCKS_HEIGHT; y++)
@@ -60,14 +62,14 @@ bool toRenderEntities::processInput(SDL_Event& _event){
         _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
         _move->addInfoComponent(new EntitySourceCommandComponent(library._player));*/
         command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player);
-        library._game->addCommand(move);
+        static_cast<commandControl*>(library._controller)->addCommand(move);
         return 1;
     }
     if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_RIGHT){
         command* _move=library.aux->replicate();
         _move->push_front(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
         _move->setSource(library._player);
-        library._game->addCommand(_move);
+        static_cast<commandControl*>(library._controller)->addCommand(_move);
         return 1;
     }
     return 0;

@@ -6,9 +6,30 @@
 #include "logic/automata/fsm.h"
 #include "logic/engines/behaviour/behaviourEngine.h"
 #include "control/command.h"
+#include "logic/objects/components/graphicComponent.h"
+#include "control/control.h"
+#include "generation/dungeonFactory.h"
+#include "generation/caveFactory.h"
+#include "generation/biomeFactory.h"
+#include "graphic/mainWindow.h"
+#include "graphic/IO.h"
 
 int main(){
     game _game;
+    _game.addControlUnit(new commandControl());
+    _game.addIOUnit(new SDLIO());
+    std::vector<biomeFactory*> factories;
+    //factories.push_back(new biomeFactory());
+    factories.push_back(new caveFactory(45,5));
+    
+    library._mainWindow=new mainWindow();
+    library._world=dungeonFactory(factories).makeNew(1,10); //new World(100, 100);
+    library._innerAnimationManager=new toRenderInnerAnimation();
+    library._mainWindow->addLayer(library._innerAnimationManager);
+    library._mainWindow->addLayer(new toRenderBackground());
+    library._mainWindow->addLayer(new toRenderEntities());
+    library._outerAnimationManager=new toRenderOuterAnimation();
+    library._mainWindow->addLayer(library._outerAnimationManager);
 
     EntityID ent=library._world->newEntity();
     library._world->Assign<positionComponent>(ent)->moveTo(1,1,library._world,ent);

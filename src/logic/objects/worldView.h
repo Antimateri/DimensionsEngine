@@ -1,3 +1,4 @@
+//iterator designed for scanning the world for entities
 #pragma once
 
 #include "world.h"
@@ -5,12 +6,15 @@
 template<typename... ComponentTypes>
 struct worldView{
 
+    //constructor
     worldView(World& world): world(&world){
+        //if no components are specified, all entities are returned
         if (sizeof...(ComponentTypes) == 0){
             all = true;
             it=world.componentPools[0]->occupied.begin();
             ending=world.componentPools[0]->occupied.end();
         }
+        //if components are specified, only entities with those components are returned
         else{
             unsigned int componentIds[] = { 0, world.GetId<ComponentTypes>() ... };
             int mini=MAX_COMPONENTS+1;
@@ -72,6 +76,7 @@ struct worldView{
     bool all{0};
 
     Iterator begin() {
+        //advances while the entity doesn't have the required components
         while (it!=ending && !(mask == (mask & world->entities[*it].mask))){
             ++it;
         } 

@@ -2,6 +2,7 @@
 
 #include "common.h"
 
+//state of a finite state machine
 class state{
 protected:
     std::unordered_map<int, state*> conections;
@@ -26,30 +27,3 @@ public:
     }
 
 };
-
-/*class goalState: public state{
-private:
-
-    std::unordered_map<int, command*> change;
-    std::unordered_set<int> goals;
-
-public:
-
-    using state::state;
-
-    state* const nextState(int input);
-
-    bool const isGoal(int goal){
-        return goals.count(goal);
-    }
-
-    void addGoal(int goal){
-        goals.insert(goal);
-    }
-
-    void newConnection(int input, state* state){
-        if(!conections.count(input))conections.insert({input,state});
-        conections[input]=state;
-    }
-
-};*/

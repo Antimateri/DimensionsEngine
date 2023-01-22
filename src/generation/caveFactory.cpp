@@ -1,5 +1,6 @@
 #include "generation/caveFactory.h"
 #include "logic/objects/world.h"
+#include "logic/objects/components/graphicComponent.h"
 
 int caveFactory::getSurrounding(int x, int y, std::vector<std::vector<int>> map) {
     int out=0;

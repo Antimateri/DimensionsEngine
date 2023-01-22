@@ -1,4 +1,6 @@
+//common library for the project, everything that is used in multiple files should be here
 #pragma once
+
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <random>

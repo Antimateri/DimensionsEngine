@@ -1,5 +1,7 @@
 #include "generation/biomeFactory.h"
 #include "logic/objects/world.h"
+#include "graphic/textureManager.h"
+#include "logic/objects/components/graphicComponent.h"
 
 void biomeFactory::makeNew(World* world, std::vector<region>& regiones, std::vector<int>& zone, std::vector<region>& conexions, int level, randomVar& gen) {
 		

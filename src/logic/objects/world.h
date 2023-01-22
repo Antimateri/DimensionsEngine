@@ -4,8 +4,6 @@
 #include "entity.h"
 #include "logic/objects/entityDefinition.h"
 
-#define ChunkSize 32
-
 struct WorldBlueprints{
     std::vector<entityDefinition> _entityDefinitions;
     std::vector<effect*> _effects;
@@ -23,6 +21,7 @@ private:
 
 public:
 
+    //components of all entities in the game
     struct ComponentPool{
         ComponentPool(size_t elementsize){
             elementSize = elementsize;
@@ -42,36 +41,43 @@ public:
         std::unordered_set<EntityIndex> occupied;
     };
 
+    //representation of the map in the game
     struct mapRepresentation{
 
-        int nXTiles, nYTiles;
+        int nXTiles, nYTiles; //size of the map in tiles
 
         World* super;
 
-        std::vector<std::vector<std::list<EntityID>>> map;
+        std::vector<std::vector<std::list<EntityID>>> map; //representetation as a list containing id's of entities in each tile of the map
 
        mapRepresentation(int nXTiles, int nYTiles, World* super): 
                 nXTiles(nXTiles), nYTiles(nYTiles), map(nXTiles,std::vector<std::list<EntityID>>(nYTiles,std::list<EntityID>())), super(super){}
 
+        //checks if a tile is in the map
         bool isValid(int x, int y){
             return (x >= 0) && (x < map.size()) && (y >= 0) && (y < map[0].size());
         }
 
+        //hashes a pair of coordinates into a single number
         long long hashCoord(int x, int y){
             return x*map[0].size()+y;
         }
 
+        //gets the coordinates from a hashed number
         void deHashCoord(long long coord, int &x, int &y){
             y=coord%map[0].size();
             x=(coord-y)/map[0].size();
         }
 
+        //gets the block a tile produces
         bool getBlock(int dir, int x, int y);
 
+        //checks if a tile is valid and contains an entity
         bool isValidEntity(int x, int y){
             return isValid(x,y) && !map[x][y].empty() && map[x][y].front()!=INVALID_ENTITY;
         }
 
+        //gets the required component of the entity in a certain position
         template<typename T>
         T* Get(int x, int y){
             if(!isValidEntity(x,y))
@@ -90,31 +96,31 @@ public:
 
     mapRepresentation _map;
 
-    SDL_Texture* background;
+    //SDL_Texture* background;
 
     World(int nXTiles, int nYTiles);
 
     ~World();
 
-    int getChunk(int x, int y);
+    int getChunk(int x, int y); //gets the chunk of a tile
 
-    std::list<int> getChunks(int x, int y, int r);
+    std::list<int> getChunks(int x, int y, int r); //gets the chunks of a tile and its neighbours in a radious of r chunks
 
     template <class T>
-    unsigned int GetId();
+    unsigned int GetId(); //gets the id of a component
 
-    EntityID newEntity();
-
-    template<typename T>
-    T* Assign(EntityID id);
+    EntityID newEntity(); //creates a new entity
 
     template<typename T>
-    T* Get(EntityID id);
+    T* Assign(EntityID id); //assigns a component to an entity
 
     template<typename T>
-    void Remove(EntityID id);
+    T* Get(EntityID id); //gets a component of an entity
 
-    void DestroyEntity(EntityID id);
+    template<typename T>
+    void Remove(EntityID id); //removes a component of an entity
+
+    void DestroyEntity(EntityID id); //destroys an entity
 
 };
 

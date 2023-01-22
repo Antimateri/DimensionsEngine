@@ -1,25 +1,32 @@
-compile: graphic.o world.o game.o main.o
-	g++ ./*.o -o main -I../src -lSDL2
+DEBUG?=
 
-graphic.o: render.o textureManager.o
+compile: generation.o main.o
+	g++ -c ../src/main.cpp -o main.o -I../src $(DEBUG)
+	g++ logic.o control.o generation.o graphic.o main.o -o main -I../src -lSDL2 $(DEBUG)
+
+graphic: graphic.o
+
+logic: logic.o
+	g++ -c ../src/logic/main.cpp -o mainLogic.o -I../src $(DEBUG)
+	g++ mainLogic.o logic.o -o mainLogic -I../src $(DEBUG)
+
+control: control.o
+
+generation.o: graphic.o
+
+graphic.o: control.o
 	g++ -c ../src/graphic/mainWindow.cpp -o ./mainWindow.o -I../src
 
-render.o:
-	g++ -c ../src/graphic/renderers/toRenderBackground.cpp -o ./toRenderBackground.o -I../src
-	g++ -c ../src/graphic/renderer.cpp -o ./renderer.o -I../src
-	g++ -c ../src/graphic/renderers/toRenderEntities.cpp -o ./toRenderEntities.o -I../src
+control.o: logic.o
 
-textureManager.o:
-	g++ -c ../src/graphic/textureManager.cpp -o ./textureManager.o -I../src
-
-world.o: components.o
-	g++ -c ../src/logic/objects/world.cpp -o ./world.o -I../src
-
-components.o:
-	g++ -c ../src/logic/objects/components/component.cpp -o ./component.o -I../src 
-
-game.o: 
-	g++ -c ../src/logic/game.cpp -o ./game.o -I../src
+logic.o:
+	g++ -c ../src/logic/objects/components/component.cpp -o ./component.o -I../src $(DEBUG)
+	g++ -c ../src/logic/objects/world.cpp -o ./world.o -I../src $(DEBUG)
+	g++ -c ../src/logic/automata/states.cpp -o ./fsm.o -I../src $(DEBUG)
+	g++ -c ../src/library.cpp -o ./library.o -I../src $(DEBUG)
+	g++ -c ../src/logic/game.cpp -o ./game.o -I../src $(DEBUG)
+	g++ -c ../src/logic/algorithms.cpp -o ./algorithm.o -I../src $(DEBUG)
+	ld -r ./component.o ./world.o ./fsm.o ./library.o ./game.o ./algorithm.o -o ./logic.o $(DEBUG)
 
 main.o:
 	g++ -c ../src/main.cpp -o main.o -I../src
@@ -32,4 +39,3 @@ debugW:
 
 clear:
 	-rm ./*.o
-	rm ./main
