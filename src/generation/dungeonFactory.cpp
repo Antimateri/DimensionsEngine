@@ -37,7 +37,7 @@ World* dungeonFactory::makeNew(int difficulty, int seed) {
 
 	delete divisions;
 
-	SDL_Renderer* renderer=library._textureManager->edit(nullptr);
+	/*SDL_Renderer* renderer=library._textureManager->edit(nullptr);
 
 	SDL_SetRenderTarget(renderer,NULL);
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
@@ -45,7 +45,7 @@ World* dungeonFactory::makeNew(int difficulty, int seed) {
 	std::cout<<SDL_GetError();
 	SDL_SetRenderTarget(renderer,created->background);
 	
-	SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer);*/
 
 
 	return created;
