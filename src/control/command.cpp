@@ -2,6 +2,12 @@
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
 #include "control/command.h"
 #include "control/commandComponents/commandComponents.h"
+#include "logic/objects/entity.h"
+
+command::command(){
+    source=INVALID_ENTITY;
+    stopable=false;
+}
 
 command::~command(){
     it=_components.begin();

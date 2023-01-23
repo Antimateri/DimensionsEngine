@@ -3,6 +3,7 @@
 #include "logic/objects/components/component.h"
 #include "logic/engines/behaviour/behaviourEngine.h"
 #include "logic/objects/world.h"
+#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
 int const teleportCommandComponent::action(command* _command, game* _game){
     prevx=library._world->Get<positionComponent>(_command->source)->tileX;

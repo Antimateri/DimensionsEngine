@@ -1,11 +1,8 @@
 #pragma once
 
 #include "common.h"
-#include "logic/game.h"
-#include "logic/objects/entity.h"
-#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
-struct command{
+class command{
 private:
 
     std::list<commandComponent*>::iterator it;
@@ -24,7 +21,7 @@ public:
 
     bool stopable;
 
-    command(){source=INVALID_ENTITY;stopable=false;}
+    command();
 
     void ready(){it=_components.begin();}
 

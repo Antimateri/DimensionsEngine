@@ -8,7 +8,7 @@ all: generation.o
 
 graphic: graphic.o
 	g++ $(FLAGS) -c ../src/graphic/main.cpp -o mainGraphic.o -I../src $(DEBUG)
-	g++ $(FLAGS) mainGraphic.o graphic.o logic.o control.o -o mainGraphic -I../src $(DEBUG)
+	g++ $(FLAGS) mainGraphic.o graphic.o logic.o control.o -o mainGraphic -I../src -lSDL2 $(DEBUG)
 
 logic: logic.o
 	g++ $(FLAGS) -c ../src/logic/main.cpp -o mainLogic.o -I../src $(DEBUG)

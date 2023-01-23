@@ -3,6 +3,7 @@
 #include "control/command.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
+#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
 int const setCurrentCommandComponent::action(command* _command, game* _game){
     if(library._world->Get<currentActionComponent>(_command->source)!=nullptr){

@@ -5,6 +5,16 @@
 #include "graphic/toRender/toRender.h"
 #include "logic/objects/world.h"
 
+innerAnimationCommandComponent::~innerAnimationCommandComponent(){delete an;}
+
+commandComponent* const innerAnimationCommandComponent::replicate(){
+    return new innerAnimationCommandComponent(an->replicate());
+}
+
+void innerAnimationCommandComponent::abort(command* _command, const game* _game){
+    an->abort();
+}
+
 int const innerAnimationCommandComponent::action(command* _command, game* _game){
     if(_command->source==INVALID_ENTITY)return -1;
     an->setSource(_command->source);
@@ -40,3 +50,13 @@ int const outerAnimationCommandComponent::reverseAction(command* _command, game*
     library._outerAnimationManager->addOuterAnimation(an);
     return 0;
 }
+
+commandComponent* const outerAnimationCommandComponent::replicate(){
+    return new outerAnimationCommandComponent(an->replicate());
+}
+
+void outerAnimationCommandComponent::abort(command* _command, const game* _game){
+    an->abort();
+}
+
+outerAnimationCommandComponent::~outerAnimationCommandComponent(){delete an;}

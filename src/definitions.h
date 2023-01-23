@@ -25,7 +25,7 @@ struct game;
 class World;
 class mainWindow;
 class textureManager;
-struct command;
+class command;
 class planningParameter;
 struct imgDir;
 class effect;

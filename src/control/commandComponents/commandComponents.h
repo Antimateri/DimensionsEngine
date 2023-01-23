@@ -2,8 +2,6 @@
 
 #include "common.h"
 #include "logic/objects/components/component.h"
-#include "graphic/animation/animation.h"
-#include "logic/automata/fsm.h"
 
 class commandComponent{
 public:
@@ -98,14 +96,14 @@ public:
 
     innerAnimationCommandComponent(innerAnimation* an):an(an){}
 
-    ~innerAnimationCommandComponent(){delete an;}
+    ~innerAnimationCommandComponent();
 
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
     bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
-    commandComponent* const replicate(){return new innerAnimationCommandComponent(an->replicate());}
-    void abort(command* _command, const game* _game){an->abort();}
+    commandComponent* const replicate();
+    void abort(command* _command, const game* _game);
 };
 
 class outerAnimationCommandComponent: public commandComponent{
@@ -117,14 +115,14 @@ public:
 
     outerAnimationCommandComponent(outerAnimation* an):an(an){}
 
-    ~outerAnimationCommandComponent(){delete an;}
+    ~outerAnimationCommandComponent();
 
     int const action(command* _command, game* _game);
     int const reverseAction(command* _command, game* _game);
     //se comprueba si puede realizarlo y se paga el precio (en ese orden)
     bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
-    commandComponent* const replicate(){return new outerAnimationCommandComponent(an->replicate());}
-    void abort(command* _command, const game* _game){an->abort();}
+    commandComponent* const replicate();
+    void abort(command* _command, const game* _game);
 };
 
 class teleportCommandComponent: public commandComponent{

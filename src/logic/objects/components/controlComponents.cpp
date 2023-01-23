@@ -1,5 +1,6 @@
 #include "control/command.h"
 #include "logic/objects/components/component.h"
+#include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
 void actorComponent::clearPlan(){
     plan.clear();
