@@ -1,4 +1,4 @@
-//includes the idea of effect, todo
+//includes the idea of effect, TODO
 #include "common.h"
 
 class effect{

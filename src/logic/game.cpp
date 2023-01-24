@@ -29,11 +29,11 @@ void game::changeGameState(gameState state){
     }
 }
 
-game::game(){
-    //library._game=this;
-}
+game::game(){}
 
 game::~game(){
+    delete _controlUnit;
+    delete _IOUnit;
 }
 
 bool game::initGame(){

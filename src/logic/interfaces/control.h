@@ -1,3 +1,4 @@
+//interface for a controller module
 #pragma once
 #include "common.h"
 

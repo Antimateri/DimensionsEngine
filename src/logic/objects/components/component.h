@@ -2,6 +2,7 @@
 
 #include "common.h"
 
+//a couple of constants and functions to work with directions
 namespace directions{
         const int center=1;
         const int left=2;
@@ -16,12 +17,14 @@ namespace directions{
     int getOpposite(int dir);
 }
 
+//TODO
 class combatComponent{
 public:
     int combatID;
     int combatPosition;
 };
 
+//represents the position of an entity in the world
 class positionComponent{
 private:
 
@@ -50,6 +53,7 @@ public:
     moveError moveInDirection(int dir, World* world, EntityID id);
 };
 
+//represents how the presence of the entity affects movement in its tile
 class blockComponent{
 private:
     int type;
@@ -66,6 +70,7 @@ public:
 
 };
 
+//represent an action the entity is performing
 class currentActionComponent{
 public:
     command* current=nullptr;
@@ -76,11 +81,13 @@ public:
     command* action;
 };
 
+//represents the possible actions a entity can perform
 class posibleActionsComponent{
 public:
     std::list<command*> posibilities;
 };
 
+//stores the information relative to the planner of an entity
 class actorComponent{
 private:
 
@@ -93,40 +100,47 @@ private:
 
 public:
 
+    //remove the active plan
     void clearPlan();
 
+    //check if the plan is valid
     bool planValid();
 
+    //check if the plan is ready to be executed
     bool planReady(std::unordered_map<int, planningParameter *>* status, game* _game);
 
+    //changes the state of the entity
     actorComponent* addParameter(planningParameter* param);
 
+    //gets the parameters of the entity
     std::unordered_map<int, planningParameter*> getParameters();
 
+    //adds a goal to the entity
     actorComponent* addGoal(planningParameter* goal);
 
+    //gets the current goal of the entity
     planningParameter* getGoal();
 
+    //sets the current plan of the entity
     void setPlan(std::deque<command*>& _plan);
 
+    //gets the next step of the current plan
     command* getNextAction(std::unordered_map<int, planningParameter *>* status, game* _game);
 };
 
-class plancomponent{
-public:
-    std::list<command*> plan;
-};
-
+//TODO
 class effectComponent{
 public:
     std::list<effect*> effects;
 };
 
+//TODO
 class entityStateComponent{
 public:
     planningState* state;
 };
 
+//General class for counters in an entity such as action points or health points
 class valueComponent{
 private:
     int val;

@@ -1,3 +1,4 @@
+//code to try the logic module
 #include "logic/game.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
@@ -6,21 +7,20 @@
 int main(){
     game _game;
 
-    library._world=new World(100, 100);
+    _game.setWorld(new World(100, 100));
 
-    EntityID ent=library._world->newEntity();
-    library._world->Assign<positionComponent>(ent)->moveTo(1,1,library._world,ent);
-    library._world->Assign<currentActionComponent>(ent);
+    EntityID ent=_game.getWorld()->newEntity();
+    _game.getWorld()->Assign<positionComponent>(ent)->moveTo(1,1,_game.getWorld(),ent);
+    _game.getWorld()->Assign<currentActionComponent>(ent);
 
     library._player=ent;
 
-    EntityID ent2=library._world->newEntity();
-    library._world->Assign<positionComponent>(ent2)->moveTo(9,9,library._world,ent2);
-    library._world->Assign<blockComponent>(ent2)->setBlock(directions::all);
-    library._world->Assign<currentActionComponent>(ent2);
-    library._world->Assign<APComponent>(ent2)->setmax(100)->setVal(100);
+    EntityID ent2=_game.getWorld()->newEntity();
+    _game.getWorld()->Assign<positionComponent>(ent2)->moveTo(9,9,_game.getWorld(),ent2);
+    _game.getWorld()->Assign<blockComponent>(ent2)->setBlock(directions::all);
+    _game.getWorld()->Assign<currentActionComponent>(ent2);
+    _game.getWorld()->Assign<APComponent>(ent2)->setmax(100)->setVal(100);
 
-    library._game->initGame();
-    //library._game->gameLoop();
+    _game.initGame();
     return 0;
 }

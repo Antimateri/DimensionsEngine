@@ -1,3 +1,4 @@
+//different goals and states for planning, both are codified in planningParameter
 #pragma once
 
 #include "common.h"
@@ -15,7 +16,9 @@ public:
     planningParameter(int priority, int id) : _priority(priority), _id(id) {}
     ~planningParameter() {}
 
-    virtual bool satisfies(planningParameter *parameter){return false;};
+    virtual bool satisfies(planningParameter *parameter){return false;};    //if this is satiesfied the parameter is satisfied?
+    
+    //comparasion operators, sintax sugar if you may
     virtual bool operator==(planningParameter *parameter){return false;};
     bool operator!=(planningParameter *parameter){
         return !((*this)==parameter);
@@ -33,11 +36,15 @@ public:
         return !((*this)<=parameter);
     }
 
+    //copies the important information into a new object
     virtual planningParameter* replicate(){return (new planningParameter())->setOwner(getOwner());}
 
+    //in case it becoming active triggers something
     virtual void activate(){}
     virtual void deactivate(){}
 
+    //sum and substraction of parameters and goals, for example if you add a goal of 25 action 
+    //points to a goal of 10 action points you get a goal of 35 action points
     virtual planningParameter* add(planningParameter *parameter){
         if(parameter->getID()==getID()){
             return this;
@@ -52,9 +59,12 @@ public:
         return this;
     }
 
+    //if the parameter is applicable to the situation (can be activated as a goal)
     virtual bool aplicable(std::unordered_map<int, planningParameter*>* situation){return true;}
 
+    //if the goal is satisfied
     virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation, World* _world){return false;}
+    //if the preconditions to considerer the goal are satisfied
     virtual bool satisfyPreconditions(){return false;}
 
     virtual planningParameter* setPriority(int priority){
@@ -87,11 +97,13 @@ public:
         return _id;
     }
 
+    //encapsulation on whatever the parameter stores, for example action points goal would store a number
     virtual planningParameter* setInfo(char* data){return this;}
     virtual char* getInfo(){return nullptr;}
 
 };
 
+//the entity wants to move
 class planMove: public planningParameter{
 public:
     planMove() : planningParameter(100,100) {}
@@ -108,6 +120,7 @@ public:
 
 };
 
+//the entity needs/have a certain amount of action points
 class planHasAP: public planningParameter{
 private:
     int _ap;

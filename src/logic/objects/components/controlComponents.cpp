@@ -32,6 +32,7 @@ actorComponent* actorComponent::addGoal(planningParameter* goal){
 }
 
 planningParameter* actorComponent::getGoal(){
+    //returns the lowest priority valid goal
     planningParameter* out=nullptr;
     for(auto& i : goals){
         if(i.second->aplicable(&parameters)){
@@ -55,6 +56,7 @@ void actorComponent::setPlan(std::deque<command*>& _plan){
 
 command* actorComponent::getNextAction(std::unordered_map<int, planningParameter *>* status, game* _game){
     command* out=nullptr;
+    //only act when possible
     if(planReady(status, _game)){
         out=plan.front();
         plan.pop_front();

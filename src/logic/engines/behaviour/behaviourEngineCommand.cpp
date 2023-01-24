@@ -8,6 +8,7 @@
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
 #include "control/control.h"
 
+//bfs over the action space to find a plan
 bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningParameter *>* state, std::unordered_map<int, planningParameter *>* goals, std::deque<command*>& bestP, int& best, int cost, short nrec=0){
     bool out=0;
     nrec++;
@@ -96,17 +97,17 @@ void behaviourEngine(game* _game, control* _controller){
             continue;
         }
         std::unordered_map<int, planningParameter *> status=_world->Get<actorComponent>(id)->getParameters();
-        //TODO ready?
+        //make a plan if plan is not ready
         if(!_world->Get<actorComponent>(id)->planValid() && (_world->Get<currentActionComponent>(id)->current==nullptr || _world->Get<currentActionComponent>(id)->current->abort(_controller))){
             int best=5000;
             std::unordered_map<int, planningParameter *> goals;
-            //TODO metelo en la funcion
             goals[goal->getID()]=goal;
             std::deque<command*> bestP;
             if(planner(id, _world, &status, &goals, bestP, best, 0)){
                 _world->Get<actorComponent>(id)->setPlan(bestP);
             }
         }
+        //execute a plan if possible
         if(_world->Get<actorComponent>(id)->planReady(&status, _game) && _world->Get<currentActionComponent>(id)->current==nullptr){
             command* nextCommand = _world->Get<actorComponent>(id)->getNextAction(&status, _game);
             if(nextCommand!=nullptr)

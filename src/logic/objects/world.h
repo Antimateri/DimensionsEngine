@@ -1,11 +1,13 @@
+//representation of the world, contains all the entities, their components and a representation of the map
 #pragma once
 
 #include "common.h"
 #include "entity.h"
 #include "logic/objects/entityDefinition.h"
 
+//information regarding design of the world
 struct WorldBlueprints{
-    std::vector<entityDefinition> _entityDefinitions;
+    std::vector<entityDefinition*> _entityDefinitions;
     std::vector<effect*> _effects;
     std::vector<command*> _actions;
 };
@@ -96,12 +98,11 @@ public:
 
     mapRepresentation _map;
 
-    //SDL_Texture* background;
-
     World(int nXTiles, int nYTiles);
 
     ~World();
 
+    //I have added an artificial division by chunks to reduce the planner computational necesity for the future
     int getChunk(int x, int y); //gets the chunk of a tile
 
     std::list<int> getChunks(int x, int y, int r); //gets the chunks of a tile and its neighbours in a radious of r chunks

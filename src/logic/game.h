@@ -27,8 +27,8 @@ public:
     game();
     ~game();
 
-    bool isLocked(){return lockInput;}
-    void changeGameState(gameState state);
+    bool isLocked(){return lockInput;}                  //returns if the input is locked
+    void changeGameState(gameState state);              //changes the state of execution of the game
     bool initGame();                                    //init the game
     void gameLoop();                                    //main game loop
     void run();                                         //runs the game in the main loop

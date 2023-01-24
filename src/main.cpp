@@ -29,6 +29,8 @@ int main(){
     factories.push_back(new biomeFactory());
     factories.push_back(new caveFactory(45,5));
     _game.setWorld(dungeonFactory(factories).makeNew(1,10)); //new World(100, 100);
+
+    //initialazing the graphic modules
     library._innerAnimationManager=new toRenderInnerAnimation();
     library._mainWindow->addLayer(library._innerAnimationManager);
     library._mainWindow->addLayer(new toRenderBackground(_game.getWorld()));
@@ -36,6 +38,7 @@ int main(){
     library._outerAnimationManager=new toRenderOuterAnimation();
     library._mainWindow->addLayer(library._outerAnimationManager);
 
+    //initialazing the player
     EntityID ent=_game.getWorld()->newEntity();
     _game.getWorld()->Assign<positionComponent>(ent)->moveTo(1,1,_game.getWorld(),ent);
     _game.getWorld()->Assign<currentActionComponent>(ent);
@@ -47,6 +50,7 @@ int main(){
 
     library._player=ent;
 
+    //initialazing a npc
     EntityID ent2=_game.getWorld()->newEntity();
     _game.getWorld()->Assign<positionComponent>(ent2)->moveTo(9,9,_game.getWorld(),ent2);
     _game.getWorld()->Assign<imageComponent>(ent2)->img=library._textureManager->add();
@@ -58,11 +62,14 @@ int main(){
     r=library._textureManager->edit(&_game.getWorld()->Get<imageComponent>(ent2)->img);
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255);
     SDL_RenderFillRect(r,&_game.getWorld()->Get<imageComponent>(ent2)->img.getRect());
+
+    //define actions
     textureManager::imgDir au=library._textureManager->add();
     r=library._textureManager->edit(&au);
     SDL_SetRenderDrawColor(r, 0, 255, 255, 255);
     SDL_RenderFillRect(r,&au.getRect());
 
+    //action animations
     innerAnimation* an=new innerAnimation();
     innerAnimation* an2=new innerAnimation();
     outerAnimation* an3=new outerAnimation();
@@ -77,6 +84,7 @@ int main(){
     an->addStep(au, 500.0);
     an2->addStep(_game.getWorld()->Get<imageComponent>(ent)->img, 1.0);
 
+    //teleport action for the player
     library.aux=new command();
     library.aux->push_back(new innerAnimationCommandComponent(an));
     library.aux->push_back(new outerAnimationCommandComponent(an3));
@@ -88,6 +96,7 @@ int main(){
     library.aux->push_back(new resetCurrentCommandComponent());
     library.aux->setName("teleport");
 
+    //move action for the npc
     command* rando= new command();
     rando->push_back(new setCurrentCommandComponent());
     rando->push_back(new delayCommandComponent(100));
@@ -102,6 +111,7 @@ int main(){
     an4->addStep(au, 500.0);
     an4->addStep(_game.getWorld()->Get<imageComponent>(ent2)->img, 100.0);
 
+    //restore action points action for the npc
     command* recover= new command();
     recover->push_back(new setCurrentCommandComponent());
     recover->push_back(new innerAnimationCommandComponent(an4));
@@ -114,5 +124,12 @@ int main(){
 
     _game.initGame();
     _game.gameLoop();
+
+    //cleaning
+    delete library.aux;
+    for(auto i:factories)
+        delete i;
+    delete library._mainWindow;
+    delete _game.getWorld();
     return 0;
 }

@@ -1,4 +1,4 @@
-//iterator designed for scanning the world for entities
+//iterator designed for scanning the entities in the world
 #pragma once
 
 #include "world.h"

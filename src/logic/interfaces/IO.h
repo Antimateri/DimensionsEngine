@@ -1,3 +1,4 @@
+//interface for an input/output module
 #pragma once
 #include "common.h"
 
