@@ -9,7 +9,7 @@ public:
     
     virtual void draw(SDL_Renderer* r){};
 
-    virtual bool processInput(SDL_Event& _event){return 0;};
+    virtual bool processInput(SDL_Event& _event, control* controller){return 0;};
 
 };
 
@@ -17,7 +17,7 @@ class toRenderBackground: public toRender{
 private:
 
     const int speed=1;
-
+    World* _world;
     int up=0,down=0,left=0,right=0;
 
 public:
@@ -31,7 +31,8 @@ public:
         //player
     }controls;
 
-    toRenderBackground(){
+    toRenderBackground(World* _world){
+        this->_world=_world;
         controls.mapUp=SDL_SCANCODE_UP;
         controls.mapDown=SDL_SCANCODE_DOWN;
         controls.mapLeft=SDL_SCANCODE_LEFT;
@@ -42,11 +43,15 @@ public:
 
     void draw(SDL_Renderer* r);
 
-    bool processInput(SDL_Event& _event);
+    bool processInput(SDL_Event& _event, control* controller);
 
 };
 
 class toRenderEntities: public toRender{
+private:
+
+    game* _game;
+
 public:
 
     struct {
@@ -58,11 +63,15 @@ public:
         //player
     }controls;
 
+    toRenderEntities(game* _game){
+        this->_game=_game;
+    }
+
     ~toRenderEntities(){};
 
     void draw(SDL_Renderer* r);
 
-    bool processInput(SDL_Event& _event);
+    bool processInput(SDL_Event& _event, control* controller);
 };
 
 class toRenderInnerAnimation: public toRender{
@@ -76,7 +85,7 @@ public:
     
     void draw(SDL_Renderer* r);
 
-    bool processInput(SDL_Event& _event){return 0;};
+    bool processInput(SDL_Event& _event, control* controller){return 0;};
 
     void addInnerAnimation(innerAnimation* in);
 
@@ -96,7 +105,7 @@ public:
     
     void draw(SDL_Renderer* r);
 
-    bool processInput(SDL_Event& _event){return 0;};
+    bool processInput(SDL_Event& _event, control* controller){return 0;};
 
     void addOuterAnimation(outerAnimation* in);
 

@@ -6,6 +6,8 @@
 
 class innerAnimation{
 private:
+
+    World* _world;
     std::list<std::pair<float,textureManager::imgDir>> steps;
     std::list<std::pair<float,textureManager::imgDir>>::iterator it;
     float counter;
@@ -22,7 +24,7 @@ public:
 
     float const getMs(){return ms;}
 
-    void begin();
+    void begin(World* world);
 
     bool step();
 

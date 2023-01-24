@@ -3,12 +3,12 @@
 #include "logic/engines/behaviour/behaviourEngine.h"
 
 void commandControl::applyTurn(game* game){
-    behaviourEngine(library._world, this);
+    behaviourEngine(game, this);
 
     if(waiting.empty())return;
 
     for(auto c : waiting.front()){
-        int code=c->action(game);
+        int code=c->action(this);
         if(code==0){
             _register.push_back(c);
             if(_register.size()>NUMBER_COMMANDS_REMEMBERED){

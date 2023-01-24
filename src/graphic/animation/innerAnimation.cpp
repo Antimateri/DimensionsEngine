@@ -3,13 +3,14 @@
 #include "logic/objects/components/component.h"
 #include "logic/objects/components/graphicComponent.h"
 
-void innerAnimation::begin(){
+void innerAnimation::begin(World* _world){
+    this->_world=_world;
     loop=ntimes-1;
     if(speed<0){
         it=steps.end();
         it--;
         counter=0;
-        library._world->Get<imageComponent>(source)->img=it->second;
+        _world->Get<imageComponent>(source)->img=it->second;
         this->order=0;
     }
     else if(speed>0){
@@ -34,7 +35,7 @@ bool innerAnimation::step(){
                 }
             }
             counter=it->first;
-            library._world->Get<imageComponent>(source)->img=it->second;
+            _world->Get<imageComponent>(source)->img=it->second;
             it++;
         }
         else
@@ -48,14 +49,14 @@ bool innerAnimation::step(){
                 it=steps.end();
                 it--;
                 counter=0;
-                library._world->Get<imageComponent>(source)->img=it->second;
+                _world->Get<imageComponent>(source)->img=it->second;
                 if(loop>0)loop--;
             }
         }
         if(counter>=it->first){
             counter=0;
             it--;
-            library._world->Get<imageComponent>(source)->img=it->second;
+            _world->Get<imageComponent>(source)->img=it->second;
         }
         else
             counter-=speed;
@@ -84,12 +85,12 @@ void innerAnimation::addStep(textureManager::imgDir frame, float ms){
 void innerAnimation::abort(){
     if(order){
         it=steps.end();
-        library._world->Get<imageComponent>(source)->img=steps.begin()->second;
+        _world->Get<imageComponent>(source)->img=steps.begin()->second;
     }
     else{
         it=steps.end();
         it--;
-        library._world->Get<imageComponent>(source)->img=it->second;
+        _world->Get<imageComponent>(source)->img=it->second;
         it=steps.begin();
     }
     loop=0;

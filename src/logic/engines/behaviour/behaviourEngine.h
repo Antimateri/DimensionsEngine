@@ -1,4 +1,4 @@
 #pragma once
 #include "common.h"
 
-void behaviourEngine(World* _world, control* _controller);
+void behaviourEngine(game* _game, control* _controller);

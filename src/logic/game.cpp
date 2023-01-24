@@ -3,6 +3,7 @@
 #include "logic/objects/components/component.h"
 #include "logic/interfaces/control.h"
 #include "logic/interfaces/IO.h"
+#include "logic/interfaces/control.h"
 
 struct {
     SDL_Event pause;
@@ -29,7 +30,7 @@ void game::changeGameState(gameState state){
 }
 
 game::game(){
-    library._game=this;
+    //library._game=this;
 }
 
 game::~game(){
@@ -51,7 +52,7 @@ void game::gameLoop(){
             if(_IOUnit!=nullptr) _IOUnit->presentScene(this);
             processInput();
         }
-        else if(_gameState==gameState::Combat && library._world->Get<currentActionComponent>(library._player)->current!=nullptr){
+        else if(_gameState==gameState::Combat && getWorld()->Get<currentActionComponent>(library._player)->current!=nullptr){
             if(_IOUnit!=nullptr) _IOUnit->presentScene(this);
             processInput();
             run();
@@ -70,4 +71,9 @@ void game::run(){
 
 void game::processInput(){
     if(_IOUnit!=nullptr) _IOUnit->processInput(this, _controlUnit);
+}
+
+void game::addControlUnit(control* c){
+    _controlUnit=c;
+    c->setGame(this);
 }

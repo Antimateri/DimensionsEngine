@@ -83,6 +83,7 @@ public:
 
 class actorComponent{
 private:
+
     std::map<int, planningParameter*> goals;
     std::unordered_map<int, planningParameter*> parameters;
     std::deque<command*> plan;
@@ -96,7 +97,7 @@ public:
 
     bool planValid();
 
-    bool planReady(std::unordered_map<int, planningParameter *>* status);
+    bool planReady(std::unordered_map<int, planningParameter *>* status, game* _game);
 
     actorComponent* addParameter(planningParameter* param);
 
@@ -108,7 +109,7 @@ public:
 
     void setPlan(std::deque<command*>& _plan);
 
-    command* getNextAction(std::unordered_map<int, planningParameter *>* status);
+    command* getNextAction(std::unordered_map<int, planningParameter *>* status, game* _game);
 };
 
 class plancomponent{

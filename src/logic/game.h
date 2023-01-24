@@ -11,6 +11,7 @@ private:
     bool lockInput=false;
     control* _controlUnit=nullptr;
     IO* _IOUnit=nullptr;
+    World* _world=nullptr;
 
 public:
 
@@ -33,12 +34,18 @@ public:
     void run();                                         //runs the game in the main loop
     void processInput();                                //process the input in the main loop
     
-    void addControlUnit(control* c){                    //adds a control unit to the game
-        _controlUnit=c;
-        library._controller=c;
-    }    
+    void addControlUnit(control* c);                    //adds a control unit to the game
+
     void addIOUnit(IO* i){                              //adds an IO unit to the game
         _IOUnit=i;
+    }
+
+    void setWorld(World* w){                            //sets the world of the game
+        _world=w;
+    }
+
+    World* getWorld(){                            //gets the world of the game
+        return _world;
     }
 
 };

@@ -16,7 +16,7 @@ void SDLIO::processInput(game* _game, control* controller){
                 _game->changeGameState(game::gameState::Pause);
         }
         else if(!_game->isLocked() && _game->_gameState==game::gameState::Run)
-            library._mainWindow->processInput(_event);
+            library._mainWindow->processInput(_event, controller);
     }
 }
 

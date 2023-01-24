@@ -24,7 +24,7 @@ public:
 
     void presentScene();
 
-    void processInput(SDL_Event& _event);
+    void processInput(SDL_Event& _event, control* controller);
 
     void addLayer(toRender* render);
 

@@ -3,16 +3,18 @@
 #include "control/command.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
+#include "control/control.h"
+#include "logic/game.h"
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
 
-int const setCurrentCommandComponent::action(command* _command, game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr){
-        if(library._world->Get<currentActionComponent>(_command->source)->current!=nullptr){
-            if(library._world->Get<currentActionComponent>(_command->source)->current->stopable==0)
+int const setCurrentCommandComponent::action(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr){
+        if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current!=nullptr){
+            if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current->stopable==0)
                 return -1;
-            library._world->Get<currentActionComponent>(_command->source)->current->abort(_game);
+            _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current->abort(_controller);
         }
-        library._world->Get<currentActionComponent>(_command->source)->current=_command;
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=_command;
     }
     return 0;
 }
@@ -23,45 +25,45 @@ std::unordered_map<int, planningParameter *>* setCurrentCommandComponent::getPre
     return out;
 }
 
-int const setCurrentCommandComponent::reverseAction(command* _command, game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
-        library._world->Get<currentActionComponent>(_command->source)->current=nullptr;
+int const setCurrentCommandComponent::reverseAction(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=nullptr;
     return 0;
 }
 
-void setCurrentCommandComponent::abort(command* _command, const game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
-        library._world->Get<currentActionComponent>(_command->source)->current=nullptr;
+void setCurrentCommandComponent::abort(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=nullptr;
 }
 
-int const resetCurrentCommandComponent::reverseAction(command* _command, game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
-        library._world->Get<currentActionComponent>(_command->source)->current=_command;
+int const resetCurrentCommandComponent::reverseAction(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=_command;
     return 0;
 }
-int const resetCurrentCommandComponent::action(command* _command, game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
-        library._world->Get<currentActionComponent>(_command->source)->current=nullptr;
+int const resetCurrentCommandComponent::action(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=nullptr;
     return 0;
 }
 
-void resetCurrentCommandComponent::abort(command* _command, const game* _game){
-    if(library._world->Get<currentActionComponent>(_command->source)!=nullptr)
-        library._world->Get<currentActionComponent>(_command->source)->current=_command;
+void resetCurrentCommandComponent::abort(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<currentActionComponent>(_command->source)->current=_command;
 }
 
-int const recoverAPCommandComponent::action(command* _command, game* _game){
-    if(library._world->Get<APComponent>(_command->source)!=nullptr)
-        library._world->Get<APComponent>(_command->source)->addVal(this->APRecovered);
+int const recoverAPCommandComponent::action(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<APComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<APComponent>(_command->source)->addVal(this->APRecovered);
     return 0;
 }
-int const recoverAPCommandComponent::reverseAction(command* _command, game* _game){
-    if(library._world->Get<APComponent>(_command->source)!=nullptr)
-        library._world->Get<APComponent>(_command->source)->subVal(this->APRecovered);
+int const recoverAPCommandComponent::reverseAction(command* _command, control* _controller){
+    if(_controller->getGame()->getWorld()->Get<APComponent>(_command->source)!=nullptr)
+        _controller->getGame()->getWorld()->Get<APComponent>(_command->source)->subVal(this->APRecovered);
     return 0;
 }
-bool recoverAPCommandComponent::hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status){
-    return goals->count(101) && !goals->at(101)->isSatisfied(status);
+bool recoverAPCommandComponent::hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world){
+    return goals->count(101) && !goals->at(101)->isSatisfied(status, _world);
 }
 std::unordered_map<int, planningParameter *>* recoverAPCommandComponent::getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status){
     return new std::unordered_map<int, planningParameter *>();

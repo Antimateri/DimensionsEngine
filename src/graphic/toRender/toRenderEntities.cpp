@@ -3,6 +3,7 @@
 #include "graphic/mainWindow.h"
 #include "logic/objects/components/component.h"
 #include "control/command.h"
+#include "logic/game.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/algorithms.h"
 #include "logic/objects/components/graphicComponent.h"
@@ -13,9 +14,9 @@ void toRenderEntities::draw(SDL_Renderer* r){
         for(int x=0; x < library._mainWindow->BLOCKS_WIDTH; x++){
             SDL_Rect dest={x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT};
 
-            for(EntityID id : library._world->_map.map[x+Representation_coordinates.topX][y+Representation_coordinates.topY]){
-                if(id != INVALID_ENTITY && id != RESERVED_SPACE && library._world->Get<imageComponent>(id)!=nullptr){
-                    library._textureManager->draw(&library._world->Get<imageComponent>(id)->img, &dest);
+            for(EntityID id : _game->getWorld()->_map.map[x+Representation_coordinates.topX][y+Representation_coordinates.topY]){
+                if(id != INVALID_ENTITY && id != RESERVED_SPACE && _game->getWorld()->Get<imageComponent>(id)!=nullptr){
+                    library._textureManager->draw(&_game->getWorld()->Get<imageComponent>(id)->img, &dest);
                 }
             }
 
@@ -26,14 +27,14 @@ void toRenderEntities::draw(SDL_Renderer* r){
         }
 }
 
-command* generatePathCommand(int endx, int endy, EntityID id){
+command* generatePathCommand(int endx, int endy, EntityID id, game* _game){
     std::list<Pair> in;
     command* out=new command();
     out->setSource(id);
     out->push_back(new setCurrentCommandComponent());
-    int beginx=library._world->Get<positionComponent>(id)->tileX;
-    int beginy=library._world->Get<positionComponent>(id)->tileY;
-    if(getPath(library._world->_map, beginx, beginy, endx, endy, in)){
+    int beginx= _game->getWorld()->Get<positionComponent>(id)->tileX;
+    int beginy= _game->getWorld()->Get<positionComponent>(id)->tileY;
+    if(getPath( _game->getWorld()->_map, beginx, beginy, endx, endy, in)){
         for(Pair i: in){
             out->push_back(new targetCommandComponent(i.first, i.second));
             out->push_back(new delayCommandComponent(100));
@@ -45,7 +46,7 @@ command* generatePathCommand(int endx, int endy, EntityID id){
     return out;
 }
 
-bool toRenderEntities::processInput(SDL_Event& _event){
+bool toRenderEntities::processInput(SDL_Event& _event, control* controller){
     if(_event.type==SDL_MOUSEMOTION){
         int x,y;
         SDL_GetMouseState(&x, &y);
@@ -61,15 +62,15 @@ bool toRenderEntities::processInput(SDL_Event& _event){
         /*command* _move=library.aux->replicate();
         _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
         _move->addInfoComponent(new EntitySourceCommandComponent(library._player));*/
-        command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player);
-        static_cast<commandControl*>(library._controller)->addCommand(move);
+        command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player, _game);
+        static_cast<commandControl*>(controller)->addCommand(move);
         return 1;
     }
     if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_RIGHT){
         command* _move=library.aux->replicate();
         _move->push_front(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
         _move->setSource(library._player);
-        static_cast<commandControl*>(library._controller)->addCommand(_move);
+        static_cast<commandControl*>(controller)->addCommand(_move);
         return 1;
     }
     return 0;

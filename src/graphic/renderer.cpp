@@ -13,10 +13,10 @@ void Renderer::draw(SDL_Renderer* r){
     }
 }
 
-void Renderer::processInput(SDL_Event& _event){
+void Renderer::processInput(SDL_Event& _event, control* controller){
     auto it=render.rbegin();
     for(;it!=render.rend();it++)
-        if((*it)->processInput(_event))
+        if((*it)->processInput(_event, controller))
             break;
 }
 

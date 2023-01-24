@@ -1,6 +1,7 @@
 #include "logic/objects/world.h"
 #include "logic/engines/behaviour/goap/goals/planningParameter.h"
 #include "control/command.h"
+#include "logic/game.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/objects/entity.h"
 
@@ -15,7 +16,7 @@ command::~command(){
         delete (*it);
 }
 
-int command::action(game* _game){
+int command::action(control* _game){
     currentState=_components.end();
     for(;it!=_components.end();it++){
         int code=(*it)->action(this,_game);
@@ -36,7 +37,7 @@ int command::action(game* _game){
     return 0;
 }
     
-int command::reverseAction(game* _game){
+int command::reverseAction(control* _game){
     for(;it!=_components.begin();it--){
         int code=(*it)->reverseAction(this,_game);
         if(code>0){
@@ -80,14 +81,14 @@ void command::pop_front(){
     _components.pop_front();
 }
 
-bool command::abort(game* _game){
+bool command::abort(control* _control){
     if(stopable){
         while(it!=_components.begin()){
             if(it!=_components.end())
-                (*it)->abort(this, _game);
+                (*it)->abort(this, _control);
             it--;
         }
-        (*it)->abort(this, _game);
+        (*it)->abort(this, _control);
         it=_components.end();
         return 1;
     }
@@ -102,18 +103,18 @@ unsigned int const command::getCost(){
     return totalCost;
 }
 
-bool command::hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status){
+bool command::hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world){
     auto it2=_components.end();
     it2--;
     for(;it2!=_components.begin();it2--)
-        if((*it2)->hasEffect(this, goals, status))return true;
+        if((*it2)->hasEffect(this, goals, status, _world))return true;
     return false;
 }
 
-bool command::canExecute(std::unordered_map<int, planningParameter *>* status){
+bool command::canExecute(std::unordered_map<int, planningParameter *>* status, game* _game){
     auto [pre,post]=getPrePost(status);
     for(auto [id,val] : *pre){
-        if(val->isSatisfied(status)==false){
+        if(val->isSatisfied(status, _game->getWorld())==false){
             delete pre;
             delete post;
             return false;
@@ -178,4 +179,13 @@ std::pair<planningState*,planningState*> command::getPrePost(std::unordered_map<
         toDelete.pop();
     }
     return std::make_pair(pre,post);
+}
+
+std::string const command::getName(){
+    return name;
+}
+
+command* command::setName(std::string _name){
+    name=_name;
+    return this;
 }

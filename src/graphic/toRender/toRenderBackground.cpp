@@ -1,12 +1,13 @@
 #include "graphic/toRender/toRender.h"
 #include "logic/objects/world.h"
+#include "logic/game.h"
 #include "graphic/mainWindow.h"
 
 void toRenderBackground::draw(SDL_Renderer* r){
 
-    if(Representation_coordinates.topY+down-up>=0 && Representation_coordinates.topY+down-up+library._mainWindow->BLOCKS_HEIGHT<library._world->_map.nYTiles)
+    if(Representation_coordinates.topY+down-up>=0 && Representation_coordinates.topY+down-up+library._mainWindow->BLOCKS_HEIGHT<_world->_map.nYTiles)
         Representation_coordinates.topY+=down-up;
-    if(Representation_coordinates.topX+right-left>=0 && Representation_coordinates.topX+right-left+library._mainWindow->BLOCKS_WIDTH<library._world->_map.nXTiles)
+    if(Representation_coordinates.topX+right-left>=0 && Representation_coordinates.topX+right-left+library._mainWindow->BLOCKS_WIDTH<_world->_map.nXTiles)
         Representation_coordinates.topX+=right-left;
     
     int topX=Representation_coordinates.topX*BLOCK_WIDTH;
@@ -16,10 +17,10 @@ void toRenderBackground::draw(SDL_Renderer* r){
 
     SDL_Rect dest2={0,0,library._mainWindow->SCREEN_WIDTH, library._mainWindow->SCREEN_HEIGHT};
 
-    SDL_RenderCopy(r,library._world->background,&dest,&dest2);*/
+    SDL_RenderCopy(r,_game.getWorld()->background,&dest,&dest2);*/
 }
 
-bool toRenderBackground::processInput(SDL_Event& _event){
+bool toRenderBackground::processInput(SDL_Event& _event, control* controller){
     if(_event.type==SDL_KEYUP && !_event.key.repeat){
         if (_event.key.keysym.scancode==controls.mapUp){
             up=0;

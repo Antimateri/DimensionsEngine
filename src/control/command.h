@@ -11,6 +11,7 @@ private:
     int totalTime=0;
     int totalCost=0;
     unsigned int effect=0;
+    std::string name;
 
     void endAction(game* _game);
 
@@ -29,15 +30,15 @@ public:
 
     command* setSource(EntityIndex _source);
 
-    int action(game* _game);
+    int action(control* _game);
     
-    int reverseAction(game* _game);
+    int reverseAction(control* _game);
     
     command* replicate();
     
-    bool hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status);
+    bool hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world);
 
-    bool canExecute(std::unordered_map<int, planningParameter *>* status);
+    bool canExecute(std::unordered_map<int, planningParameter *>* status, game* _game);
 
     std::pair<planningState*,planningState*> getPrePost(std::unordered_map<int, planningParameter *>* status);
 
@@ -49,9 +50,13 @@ public:
 
     ~command();
 
-    bool abort(game* _game);
+    bool abort(control* _control);
     
     unsigned int const getTime();
 
     unsigned int const getCost();
+
+    std::string const getName();
+
+    command* setName(std::string _name);
 };

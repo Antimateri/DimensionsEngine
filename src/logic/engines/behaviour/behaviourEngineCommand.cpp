@@ -19,7 +19,7 @@ bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningP
     }
     bool ending = 1;
     for(auto [id, val]: (*goals)){
-        if(!val->isSatisfied(state)){
+        if(!val->isSatisfied(state, _world)){
             ending=false;
             break;
         }
@@ -35,7 +35,7 @@ bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningP
     for(command* i : _world->Get<posibleActionsComponent>(entityId)->posibilities){
         std::unordered_map<int, planningParameter *>* newGoals=nullptr;
         std::unordered_map<int, planningParameter *>* newState = nullptr;
-        if(i->hasEffect(goals, state)){
+        if(i->hasEffect(goals, state, _world)){
             auto [pre,post] = i->getPrePost(state);
             for(auto [id,val]: (*pre)){
                 if(newGoals==nullptr){
@@ -88,7 +88,8 @@ bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningP
     return out;
 }
 
-void behaviourEngine(World* _world, control* _controller){
+void behaviourEngine(game* _game, control* _controller){
+    World* _world=_game->getWorld();
     for(EntityID id : worldView<actorComponent>(*_world)){
         planningParameter* goal = _world->Get<actorComponent>(id)->getGoal();
         if(goal==nullptr){
@@ -96,7 +97,7 @@ void behaviourEngine(World* _world, control* _controller){
         }
         std::unordered_map<int, planningParameter *> status=_world->Get<actorComponent>(id)->getParameters();
         //TODO ready?
-        if(!_world->Get<actorComponent>(id)->planValid() && _world->Get<currentActionComponent>(id)->current==nullptr){
+        if(!_world->Get<actorComponent>(id)->planValid() && (_world->Get<currentActionComponent>(id)->current==nullptr || _world->Get<currentActionComponent>(id)->current->abort(_controller))){
             int best=5000;
             std::unordered_map<int, planningParameter *> goals;
             //TODO metelo en la funcion
@@ -106,8 +107,10 @@ void behaviourEngine(World* _world, control* _controller){
                 _world->Get<actorComponent>(id)->setPlan(bestP);
             }
         }
-        if(_world->Get<actorComponent>(id)->planReady(&status)){
-            static_cast<commandControl*>(_controller)->addCommand(_world->Get<actorComponent>(id)->getNextAction(&status)->replicate()->setSource(id));
+        if(_world->Get<actorComponent>(id)->planReady(&status, _game) && _world->Get<currentActionComponent>(id)->current==nullptr){
+            command* nextCommand = _world->Get<actorComponent>(id)->getNextAction(&status, _game);
+            if(nextCommand!=nullptr)
+                static_cast<commandControl*>(_controller)->addCommand(nextCommand->replicate()->setSource(id));
         }
     }
 }

@@ -5,14 +5,11 @@
 
 struct libra{
 
-    game* _game;
-    World* _world;
     mainWindow* _mainWindow;
     textureManager* _textureManager;
     EntityID _player;
     toRenderInnerAnimation* _innerAnimationManager;
     toRenderOuterAnimation* _outerAnimationManager;
-    control* _controller;
     //quitar
     command* aux; 
 

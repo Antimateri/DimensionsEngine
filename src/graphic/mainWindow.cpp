@@ -61,8 +61,8 @@ void mainWindow::presentScene()
 	SDL_RenderPresent(renderer);
 }
 
-void mainWindow::processInput(SDL_Event& _event){
-	_render.processInput(_event);
+void mainWindow::processInput(SDL_Event& _event, control* controller){
+	_render.processInput(_event, controller);
 }
 
 void mainWindow::addLayer(toRender* render){

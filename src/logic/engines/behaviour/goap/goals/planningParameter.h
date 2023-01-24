@@ -54,7 +54,7 @@ public:
 
     virtual bool aplicable(std::unordered_map<int, planningParameter*>* situation){return true;}
 
-    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation){return false;}
+    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation, World* _world){return false;}
     virtual bool satisfyPreconditions(){return false;}
 
     virtual planningParameter* setPriority(int priority){
@@ -100,7 +100,7 @@ public:
         return true;
     }
 
-    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation){
+    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation, World* _world){
         return situation != nullptr && (*situation).count(getID());
     }
 
@@ -116,7 +116,7 @@ public:
 
     virtual bool satisfies(planningParameter *parameter);
 
-    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation);
+    virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation, World* _world);
 
     virtual planningParameter* add(planningParameter *parameter){
         if(parameter->getID()==getID()){
@@ -152,7 +152,7 @@ class isNotOccupiedPlan: public planningParameter{
             return true;
         }
 
-        virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation);
+        virtual bool isSatisfied(std::unordered_map<int, planningParameter*>* situation, World* _world);
 
         virtual planningParameter* replicate(){return (new isNotOccupiedPlan())->setOwner(getOwner());}
 };

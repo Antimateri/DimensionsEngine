@@ -11,8 +11,8 @@ bool actorComponent::planValid(){
     return !updatePlan;
 }
 
-bool actorComponent::planReady(std::unordered_map<int, planningParameter *>* status){
-    return planValid() && !plan.empty() && plan.front()->canExecute(status);
+bool actorComponent::planReady(std::unordered_map<int, planningParameter *>* status, game* _game){
+    return planValid() && !plan.empty() && plan.front()->canExecute(status, _game);
 }
 
 actorComponent* actorComponent::addParameter(planningParameter* param){
@@ -53,9 +53,9 @@ void actorComponent::setPlan(std::deque<command*>& _plan){
     }
 }
 
-command* actorComponent::getNextAction(std::unordered_map<int, planningParameter *>* status){
+command* actorComponent::getNextAction(std::unordered_map<int, planningParameter *>* status, game* _game){
     command* out=nullptr;
-    if(planReady(status)){
+    if(planReady(status, _game)){
         out=plan.front();
         plan.pop_front();
         if(plan.empty()){
