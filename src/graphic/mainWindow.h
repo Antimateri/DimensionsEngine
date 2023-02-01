@@ -1,3 +1,4 @@
+//Class to manage the window
 #pragma once
 
 #include "common.h"
@@ -6,12 +7,12 @@
 
 class mainWindow{
 private:
-    SDL_Renderer *renderer;
-	SDL_Window *window;
+    SDL_Renderer *renderer; //The window renderer
+	SDL_Window *window;     //The window component for SDL
 
 public:
 
-    Renderer _render;
+    Renderer _render;       //The renderer for the window, manages input and output
 
     int SCREEN_WIDTH;
     int SCREEN_HEIGHT;
@@ -22,12 +23,12 @@ public:
 
     ~mainWindow();
 
-    void presentScene();
+    void presentScene();                                        //Draws the scene
 
-    void processInput(SDL_Event& _event, control* controller);
+    void processInput(SDL_Event& _event, control* controller);  //Process input adding changes to the controller
 
-    void addLayer(toRender* render);
+    void addLayer(toRender* render);                            //Add a layer to the Renderer
 
-    void removeLastLayer();
+    void removeLastLayer();                                     //Remove the last layer from the Renderer
 
 };

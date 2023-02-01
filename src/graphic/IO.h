@@ -1,3 +1,4 @@
+//aplication of IO interface for SDL library
 #pragma once
 #include "common.h"
 #include "logic/game.h"

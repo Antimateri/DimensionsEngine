@@ -1,21 +1,31 @@
+//small commands that can be applied to the game and in conjunction create complex commands
 #pragma once
 
 #include "common.h"
 #include "logic/objects/components/component.h"
 
+//interface
 class commandComponent{
 public:
+    //executes the commandComponent
     virtual int const action(command* _command, control* _game){return 0;}
+    //reverses the commandComponent
     virtual int const reverseAction(command* _command, control* _game){return 0;}
+    //checks if the commandComponent satisfies any of the goals given the status of the plan and the state of the game
     virtual bool hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world){return false;}
+    //returns a list of preconditions that must be satisfied for the commandComponent to be executed
     virtual std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status){return (new std::unordered_map<int, planningParameter *>());}
+    //returns a list of effects that the commandComponent will have on the game
     virtual std::unordered_map<int, planningParameter *>* getEffects(command* _command, std::unordered_map<int, planningParameter *>* status){return (new std::unordered_map<int, planningParameter *>());}
+    //returns a copy of the commandComponent
     virtual commandComponent* const replicate(){return new commandComponent();}
+    //aborts the commandComponent 
     virtual void abort(command* _command, control* _game){}
     virtual int const getTime(){return 0;}
     virtual int const getCost(){return 0;}
 };
 
+//makes the active command the command the entity is executing (to avoid extreme multitasking)
 class setCurrentCommandComponent: public commandComponent{
 public:
     int const action(command* _command, control* _game);
@@ -26,16 +36,16 @@ public:
     void abort(command* _command, control* _game);
 };
 
+//resets the command the entity is executing (to avoid extreme multitasking)
 class resetCurrentCommandComponent: public commandComponent{
 public:
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate(){return new resetCurrentCommandComponent();}
     void abort(command* _command, control* _game);
 };
 
+//introduces a delay (to wait for animations for example)
 class delayCommandComponent: public commandComponent{
 private:
     float ms;
@@ -50,23 +60,7 @@ public:
     int const getTime(){return std::max(static_cast<int>(std::ceil(ms*FPS/1000)),1);}
 };
 
-/*class nextGoalStateCommandComponent: public commandComponent{
-private:
-    int nextState;
-    bool source_target;
-
-    goalState* prev;
-    
-public:
-
-    nextGoalStateCommandComponent(int nexState, bool source_target): nextState(nextState), source_target(source_target){}
-
-    int const action(command* _command, control* _game);
-    int const reverseAction(command* _command, control* _game);
-    commandComponent* const replicate(){return new nextGoalStateCommandComponent(nextState, source_target);}
-
-};*/
-
+//sets a position as the target of the command
 class targetCommandComponent: public commandComponent{
 private:
 
@@ -82,11 +76,10 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate(){return new targetCommandComponent(targetX, targetY);}
 };
 
+//starts an inner animation 
 class innerAnimationCommandComponent: public commandComponent{
 private:
 
@@ -100,12 +93,11 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate();
     void abort(command* _command, control* _game);
 };
 
+//starts an outer animation
 class outerAnimationCommandComponent: public commandComponent{
 private:
 
@@ -119,12 +111,11 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState){return true;}
     commandComponent* const replicate();
     void abort(command* _command, control* _game);
 };
 
+//moves the source to the target
 class teleportCommandComponent: public commandComponent{
 private:
 
@@ -139,11 +130,10 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate();
 };
 
+//moves the source in a random direction
 class randomMoveCommandComponent: public commandComponent{
 private:
 
@@ -156,13 +146,13 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
     bool hasEffect(command* _command, std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world);
     std::unordered_map<int, planningParameter *>* getPreconditions(command* _command, std::unordered_map<int, planningParameter *>* status);
     std::unordered_map<int, planningParameter *>* getEffects(command* _command, std::unordered_map<int, planningParameter *>* status);
     commandComponent* const replicate(){return new randomMoveCommandComponent(APCost);}
 };
 
+//makes the source recover AP
 class recoverAPCommandComponent: public commandComponent{
 private:
 
@@ -179,6 +169,7 @@ public:
         commandComponent* const replicate(){return new recoverAPCommandComponent(APRecovered);}
 };
 
+//makes the source attack the target (and a entity in it)
 class attackCommandComponent: public commandComponent{
 private:
 
@@ -193,8 +184,6 @@ public:
 
     int const action(command* _command, control* _game);
     int const reverseAction(command* _command, control* _game);
-    //se comprueba si puede realizarlo y se paga el precio (en ese orden)
-    bool const accepted(command* _command, const game* _game, planningState* userState);
     commandComponent* const replicate(){return new attackCommandComponent(damage, APcost, range, dir);}
 };
 

@@ -1,4 +1,4 @@
-//
+//main function
 
 #include "logic/game.h"
 #include "logic/objects/world.h"

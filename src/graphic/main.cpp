@@ -1,6 +1,7 @@
 #include "logic/game.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"
+//graphic main for testing, doesnt work
 #include "graphic/animation/animation.h"
 #include "control/commandComponents/commandComponents.h"
 #include "logic/automata/fsm.h"

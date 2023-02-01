@@ -1,3 +1,4 @@
+//main to test the control part of the engine, doesnt work right now
 #include "logic/game.h"
 #include "logic/objects/world.h"
 #include "logic/objects/components/component.h"

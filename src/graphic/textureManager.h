@@ -1,3 +1,4 @@
+//manages textures, more of a sketch now
 #pragma once
 
 #include "common.h"
@@ -5,6 +6,7 @@
 class textureManager{
 public:
 
+    //struct to manage the position of the images
     struct imgDir{
     private:
         SDL_Rect pos;
@@ -28,6 +30,7 @@ public:
             this->page=copia.page;
         }
 
+        //returns the position of the image in the SDL_Texture
         SDL_Rect& getRect(){
             pos.x=x*BLOCK_WIDTH;
             pos.y=y*BLOCK_HEIGHT;
@@ -37,17 +40,17 @@ public:
         }
     };
 
-    textureManager(SDL_Renderer* r);
+    textureManager(SDL_Renderer* r);    //constructor, takes the renderer to draw on
 
     ~textureManager();
 
-    void draw(textureManager::imgDir* in, SDL_Rect* dest);
+    void draw(textureManager::imgDir* in, SDL_Rect* dest);  //draws the image in in the position dest in the window renderer
 
-    imgDir add(SDL_Texture* in);
+    imgDir add(SDL_Texture* in);   //returns the next available image space and draws the texture in it
 
-    imgDir add();
+    imgDir add();   //returns the next available image space
 
-    SDL_Renderer* edit(textureManager::imgDir* in);
+    SDL_Renderer* edit(textureManager::imgDir* in); //returns the renderer to draw on the texture where the image in is
 
 private:
 

@@ -9,6 +9,18 @@
 #include "control/control.h"
 
 //bfs over the action space to find a plan
+/*
+EntityID entityId                                       the entity to plan for
+World* _world                                           the world
+std::unordered_map<int, planningParameter *>* state     the state produced during the bfs
+std::unordered_map<int, planningParameter *>* goals     the goals to reach
+std::deque<command*>& bestP                             the best plan found
+int& best                                               the cost of the best plan found
+int cost                                                the cost of the current plan
+short nrec=0                                            the number of recursive calls to force a recursion limit   
+
+out                                                     if the plan is valid
+*/
 bool planner(EntityID entityId, World* _world, std::unordered_map<int, planningParameter *>* state, std::unordered_map<int, planningParameter *>* goals, std::deque<command*>& bestP, int& best, int cost, short nrec=0){
     bool out=0;
     nrec++;

@@ -18,8 +18,10 @@ command::~command(){
 
 int command::action(control* _game){
     currentState=_components.end();
+    //iterates over the commandComponents and executes them until one of them returns a positive value (wait)
     for(;it!=_components.end();it++){
         int code=(*it)->action(this,_game);
+        //if the commandComponent returns -1 an error has risen, aborts the command
         if(code==-1){
             bool prev=stopable;
             stopable=1;
@@ -106,12 +108,13 @@ unsigned int const command::getCost(){
 bool command::hasEffect(std::unordered_map<int, planningParameter *>* goals, std::unordered_map<int, planningParameter *>* status, World* _world){
     auto it2=_components.end();
     it2--;
-    for(;it2!=_components.begin();it2--)
+    for(;it2!=_components.begin();it2--)    //checks if any of the commandComponents has an effect that satisfies a goal
         if((*it2)->hasEffect(this, goals, status, _world))return true;
     return false;
 }
 
 bool command::canExecute(std::unordered_map<int, planningParameter *>* status, game* _game){
+    //checks if the preconditions of the command are satisfied
     auto [pre,post]=getPrePost(status);
     for(auto [id,val] : *pre){
         if(val->isSatisfied(status, _game->getWorld())==false){
@@ -126,17 +129,20 @@ bool command::canExecute(std::unordered_map<int, planningParameter *>* status, g
 }
 
 std::pair<planningState*,planningState*> command::getPrePost(std::unordered_map<int, planningParameter *>* status){
+    //linear plannig algorithm to calculate the preconditions and effects of the command
     std::unordered_map<int, planningParameter *>* pre=new std::unordered_map<int, planningParameter *>();
     std::unordered_map<int, planningParameter *>* post=new std::unordered_map<int, planningParameter *>();
     auto it2=_components.end();
     it2--;
     for(;it2!=_components.begin();it2--){
+        //gets the preconditions of every command and adds them to the preconditions or uses them to reduce the effects
         for(auto [id,val] : (*(*it2)->getPreconditions(this, status))){
             if(pre->count(id)==0)
                 (*pre)[id]=val;
             else
                 (*pre)[id]->add(val);
         }
+        //gets the effects of every command and adds them to the postconditions or uses them to reduce the preconditions
         for(auto [id,val] : (*(*it2)->getEffects(this, status))){
             if(post->count(id)==0)
                 (*post)[id]=val;
@@ -144,6 +150,7 @@ std::pair<planningState*,planningState*> command::getPrePost(std::unordered_map<
                 (*post)[id]->add(val);
         }
     }
+    //reduces the preconditions and effects
     std::queue<int> toDelete;
     for(auto [id,val] : *pre){
         if(post->count(id)){

@@ -5,11 +5,11 @@
 
 struct libra{
 
-    mainWindow* _mainWindow;
-    textureManager* _textureManager;
-    EntityID _player;
-    toRenderInnerAnimation* _innerAnimationManager;
-    toRenderOuterAnimation* _outerAnimationManager;
+    mainWindow* _mainWindow;            //the window class
+    textureManager* _textureManager;    //manage and stores textures
+    EntityID _player;                   //the player entity (ugly, to change)
+    toRenderInnerAnimation* _innerAnimationManager; //manage the animations which change the texture of the entities
+    toRenderOuterAnimation* _outerAnimationManager; //manage the animations which paint over the entities
     //quitar
     command* aux; 
 

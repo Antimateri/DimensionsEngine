@@ -27,6 +27,7 @@ void toRenderEntities::draw(SDL_Renderer* r){
         }
 }
 
+//generates a command to move an entity to a position move by move, provisional
 command* generatePathCommand(int endx, int endy, EntityID id, game* _game){
     std::list<Pair> in;
     command* out=new command();
@@ -59,9 +60,6 @@ bool toRenderEntities::processInput(SDL_Event& _event, control* controller){
         return 1;
     }
     if(_event.type==SDL_MOUSEBUTTONDOWN && _event.button.button==SDL_BUTTON_LEFT){
-        /*command* _move=library.aux->replicate();
-        _move->addInfoComponent(new targetCommandComponent(Representation_coordinates.selectedX, Representation_coordinates.selectedY));
-        _move->addInfoComponent(new EntitySourceCommandComponent(library._player));*/
         command * move = generatePathCommand(Representation_coordinates.selectedX, Representation_coordinates.selectedY ,library._player, _game);
         static_cast<commandControl*>(controller)->addCommand(move);
         return 1;

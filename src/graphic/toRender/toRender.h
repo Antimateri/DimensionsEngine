@@ -1,7 +1,9 @@
+//modules of Renderer which manage input and output
 #pragma once
 
 #include "common.h"
 
+//interface
 class toRender{
 public:
 
@@ -13,6 +15,7 @@ public:
 
 };
 
+//class to manage the background, draws it and moves camera
 class toRenderBackground: public toRender{
 private:
 
@@ -47,6 +50,7 @@ public:
 
 };
 
+//draws the entities and provisionally manages the input of the player actions
 class toRenderEntities: public toRender{
 private:
 
@@ -74,6 +78,7 @@ public:
     bool processInput(SDL_Event& _event, control* controller);
 };
 
+//Manages the animations which change the image of the entities
 class toRenderInnerAnimation: public toRender{
 private:
 
@@ -87,13 +92,14 @@ public:
 
     bool processInput(SDL_Event& _event, control* controller){return 0;};
 
-    void addInnerAnimation(innerAnimation* in);
+    void addInnerAnimation(innerAnimation* in);  //add a new animation to the list
 
-    void pause();
+    void pause();   //pause the animations
 
-    void start();
+    void start();   //start the animations
 };
 
+//Manages the animations which draw directly on the screen
 class toRenderOuterAnimation: public toRender{
 private:
 
@@ -107,9 +113,9 @@ public:
 
     bool processInput(SDL_Event& _event, control* controller){return 0;};
 
-    void addOuterAnimation(outerAnimation* in);
+    void addOuterAnimation(outerAnimation* in); //add a new animation to the list
 
-    void pause();
+    void pause();   //pause the animations
 
-    void start();
+    void start();   //start the animations
 };

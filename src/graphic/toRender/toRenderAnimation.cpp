@@ -5,6 +5,7 @@ void toRenderInnerAnimation::draw(SDL_Renderer* r){
     if(running){
         auto it=todo.begin();
         while(it!=todo.end())
+            //if the animation is finished, remove it from the list
             if((*it)->step())
                 it=todo.erase(it);
             else
@@ -28,6 +29,7 @@ void toRenderOuterAnimation::draw(SDL_Renderer* r){
     if(running){
         auto it=todo.begin();
         while(it!=todo.end())
+            //if the animation is finished, remove it from the list
             if((*it)->step())
                 it=todo.erase(it);
             else{

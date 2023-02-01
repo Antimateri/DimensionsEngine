@@ -19,5 +19,5 @@ public:
         return _game;
     }
 
-    virtual void applyTurn(game* game)=0;
+    virtual void applyTurn(game* game)=0; //apply the changes produced during the turn
 };
