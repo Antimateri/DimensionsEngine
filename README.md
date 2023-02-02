@@ -168,7 +168,7 @@ git clone git@github.com:Antimateri/DimensionsEngine.git
 ```
 ### Go to the make folder and build the program
 ```
-cd DimensionsGame/make
+cd DimensionsEngine/make
 make
 make clear
 ```
