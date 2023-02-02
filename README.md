@@ -164,7 +164,7 @@ sudo apt-get install libsdl2-dev
 ```
 ### Clone the repository
 ```
-git clone git@github.com:Antimateri/DimensionsGame.git
+git clone git@github.com:Antimateri/DimensionsEngine.git
 ```
 ### Go to the make folder and build the program
 ```
